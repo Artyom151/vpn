@@ -2,18 +2,8 @@
 
 [ $EUID -ne 0 ] && echo "[!] Требуется root" && exit 1
 
-echo "[*] Install dependencies"
-
-if command -v apt &> /dev/null; then
-    apt update -y
-    apt install -y curl jq openssl net-tools ufw
-elif command -v pacman &> /dev/null; then
-    pacman -S --noconfirm curl jq openssl net-tools ufw
-elif command -v dnf &> /dev/null; then
-    dnf install -y curl jq openssl net-tools ufw
-elif command -v yum &> /dev/null; then
-    yum install -y curl jq openssl net-tools ufw
-fi
+apt update -y 2>/dev/null
+apt install -y curl jq openssl net-tools ufw 2>/dev/null
 
 ufw allow 22/tcp 2>/dev/null
 ufw allow 443/tcp 2>/dev/null
@@ -23,19 +13,14 @@ if ! command -v xray &> /dev/null; then
     bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
 fi
 
-KEYS=$(xray x25519 2>/dev/null)
+KEYS=$(xray x25519)
 
 PRIV_KEY=$(echo "$KEYS" | awk '/PrivateKey/ {print $2}')
-PUB_KEY=$(echo "$KEYS" | awk '/PrivateKey/ {print $2}')
-
-if [ -z "$PRIV_KEY" ]; then
-    echo "[!] PrivateKey error"
-    exit 1
-fi
+PASSWORD=$(echo "$KEYS" | awk '/Password/ {print $2}')
 
 UUID=$(cat /proc/sys/kernel/random/uuid)
 SHORT_ID=$(openssl rand -hex 4)
-PASSWORD=$(openssl rand -base64 16)
+
 IP=$(curl -s ifconfig.me)
 PORT=443
 SNI="www.cloudflare.com"
@@ -61,14 +46,9 @@ cat > /usr/local/etc/xray/config.json <<EOF
         "realitySettings": {
           "show": false,
           "dest": "${SNI}:443",
-          "xver": 0,
-          "serverNames": [
-            "${SNI}"
-          ],
+          "serverNames": ["${SNI}"],
           "privateKey": "${PRIV_KEY}",
-          "shortIds": [
-            "${SHORT_ID}"
-          ],
+          "shortIds": ["${SHORT_ID}"],
           "password": "${PASSWORD}"
         }
       }
@@ -82,8 +62,8 @@ cat > /usr/local/etc/xray/config.json <<EOF
 }
 EOF
 
-jq . /usr/local/etc/xray/config.json > /dev/null 2>&1 || {
-    echo "[!] JSON error"
+jq . /usr/local/etc/xray/config.json > /dev/null || {
+    echo "[!] JSON ошибка"
     exit 1
 }
 
@@ -92,12 +72,12 @@ systemctl restart xray
 sleep 2
 
 systemctl is-active --quiet xray || {
-    echo "[!] Xray not running"
+    echo "[!] Xray не запущен"
     journalctl -u xray -n 20 --no-pager
     exit 1
 }
 
-LINK="vless://${UUID}@${IP}:${PORT}?type=tcp&security=reality&flow=xtls-rprx-vision&pbk=${PUB_KEY}&sid=${SHORT_ID}&sni=${SNI}&fp=chrome#Remaware"
+LINK="vless://${UUID}@${IP}:${PORT}?type=tcp&security=reality&flow=xtls-rprx-vision&sni=${SNI}&sid=${SHORT_ID}&password=${PASSWORD}#Remaware"
 
-echo "[*] DONE"
+echo "[*] Готово"
 echo "$LINK"
