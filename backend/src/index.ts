@@ -210,7 +210,7 @@ function buildUserLink(user: VpnUser): string | null {
     sni: reality?.serverNames?.[0] ?? 'www.cloudflare.com',
     pbk: publicKey,
     sid: reality?.shortIds?.[0] ?? randomBytes(8).toString('hex'),
-    name: user.username,
+    name: `Pear VPN | ${user.username}`,
   })
 }
 
@@ -463,11 +463,16 @@ app.get('/api/sub/:token', (req, res) => {
   const usedBytes = Math.floor(usedGb * 1024 * 1024 * 1024)
   const totalBytes = Math.floor(totalGb * 1024 * 1024 * 1024)
   const expire = Math.floor(new Date(user.expiresAt).getTime() / 1000)
+  const profileTitle = Buffer.from('Pear VPN').toString('base64')
+  const body = Buffer.from(`${link}\n`, 'utf8').toString('base64')
+
   res.setHeader('Content-Type', 'text/plain; charset=utf-8')
   res.setHeader('profile-web-page-url', 'https://pear-vpn.local/')
   res.setHeader('support-url', 'https://t.me/pearvpn_support')
+  res.setHeader('profile-title', `base64:${profileTitle}`)
+  res.setHeader('content-disposition', 'inline; filename="pear-vpn-subscription.txt"')
   res.setHeader('subscription-userinfo', `upload=0; download=${usedBytes}; total=${totalBytes}; expire=${expire}`)
-  res.send(`${link}\n`)
+  res.send(body)
 })
 
 app.post('/api/users/:id/rotate', (req, res) => {
