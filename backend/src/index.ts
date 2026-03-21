@@ -303,7 +303,19 @@ function syncXrayClients(users: VpnUser[]): { synced: boolean; message: string }
 
   const ok = saveXray(config)
   if (!ok) return { synced: false, message: 'failed to write xray config' }
-  return { synced: true, message: `synced ${inbound.settings.clients.length} active users` }
+
+  const restarted =
+    spawnSync('systemctl', ['restart', 'xray'], { stdio: 'ignore' }).status === 0 ||
+    spawnSync('service', ['xray', 'restart'], { stdio: 'ignore' }).status === 0
+
+  if (!restarted) {
+    return {
+      synced: false,
+      message: `synced ${inbound.settings.clients.length} users to config, but failed to restart xray`,
+    }
+  }
+
+  return { synced: true, message: `synced ${inbound.settings.clients.length} active users and restarted xray` }
 }
 
 function buildDashboard() {
