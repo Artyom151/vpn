@@ -34,6 +34,7 @@ type VpnUser = {
 const API_BASE_RAW = import.meta.env.VITE_API_URL ?? 'http://localhost:5174'
 const API_BASE_NORMALIZED = API_BASE_RAW.replace(/\/+$/, '')
 const API_BASE = API_BASE_NORMALIZED.endsWith('/api') ? API_BASE_NORMALIZED : `${API_BASE_NORMALIZED}/api`
+const api = (path: string) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`
 
 const text = {
   ru: {
@@ -118,7 +119,7 @@ function App() {
   const [commonLink, setCommonLink] = useState('')
 
   async function loadAll() {
-    const [dash, usr] = await Promise.all([fetch(`${API_BASE}/api/dashboard`), fetch(`${API_BASE}/api/users`)])
+    const [dash, usr] = await Promise.all([fetch(api('/dashboard')), fetch(api('/users'))])
     if (!dash.ok || !usr.ok) throw new Error('api')
     const d = (await dash.json()) as DashboardData
     const u = (await usr.json()) as { users: VpnUser[] }
@@ -144,7 +145,7 @@ function App() {
     e.preventDefault()
     if (!newUserName.trim()) return
     const durationSeconds = newUserDays * 86400 + newUserHours * 3600 + newUserMinutes * 60 + newUserSeconds
-    await fetch(`${API_BASE}/api/users`, {
+    await fetch(api('/users'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -167,15 +168,15 @@ function App() {
   }
 
   async function patchUser(id: string, payload: Record<string, unknown>) {
-    await fetch(`${API_BASE}/api/users/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    await fetch(api(`/users/${id}`), { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
     await loadAll()
   }
-  async function rotateUser(id: string) { await fetch(`${API_BASE}/api/users/${id}/rotate`, { method: 'POST' }); await loadAll() }
-  async function deleteUser(id: string) { await fetch(`${API_BASE}/api/users/${id}`, { method: 'DELETE' }); await loadAll() }
-  async function syncUsers() { await fetch(`${API_BASE}/api/users/sync`, { method: 'POST' }); await loadAll() }
+  async function rotateUser(id: string) { await fetch(api(`/users/${id}/rotate`), { method: 'POST' }); await loadAll() }
+  async function deleteUser(id: string) { await fetch(api(`/users/${id}`), { method: 'DELETE' }); await loadAll() }
+  async function syncUsers() { await fetch(api('/users/sync'), { method: 'POST' }); await loadAll() }
 
   async function generateRealityKeys() {
-    const r = await fetch(`${API_BASE}/api/keys/reality`, { method: 'POST' })
+    const r = await fetch(api('/keys/reality'), { method: 'POST' })
     if (!r.ok) return
     const payload = (await r.json()) as { privateKey: string; publicKey: string }
     setRealityKeys(payload)
@@ -184,12 +185,12 @@ function App() {
 
   async function savePublicKey() {
     if (!publicKeyInput.trim()) return
-    await fetch(`${API_BASE}/api/settings/public-key`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ publicKey: publicKeyInput.trim() }) })
+    await fetch(api('/settings/public-key'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ publicKey: publicKeyInput.trim() }) })
     await loadAll()
   }
 
   async function generateCommonLink() {
-    const r = await fetch(`${API_BASE}/api/keys/client`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: `PearVPN-${Date.now()}` }) })
+    const r = await fetch(api('/keys/client'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: `PearVPN-${Date.now()}` }) })
     const payload = (await r.json()) as { link?: string; error?: string }
     setCommonLink(payload.link ?? payload.error ?? '')
   }

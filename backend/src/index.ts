@@ -282,8 +282,10 @@ function makeClientLink(args: {
   const q = new URLSearchParams({
     type: 'tcp',
     security: 'reality',
+    encryption: 'none',
     flow: args.flow,
     sni: args.sni,
+    fp: 'chrome',
     pbk: args.pbk,
     sid: args.sid,
   })
@@ -579,6 +581,11 @@ app.get('/api/users/:id/link', (req, res) => {
 
 ensureDb()
 ensureSettings()
+{
+  const db = readDb()
+  const sync = syncXrayClients(db.users.map((u) => normalizeUser(u)))
+  console.log(`[pear-vpn] startup xray sync: ${sync.message}`)
+}
 
 app.listen(PORT, HOST, () => {
   console.log(`Pear VPN backend listening on http://${HOST}:${PORT}`)

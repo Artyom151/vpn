@@ -79,6 +79,14 @@ fi
 KEY_OUTPUT=$(xray x25519)
 PRIV_KEY=$(echo "$KEY_OUTPUT" | awk '/PrivateKey:/ {print $2}')
 PUB_KEY=$(echo "$KEY_OUTPUT" | awk '/PublicKey:/ {print $2}')
+if [ -z "${PUB_KEY:-}" ]; then
+  PUB_KEY=$(echo "$KEY_OUTPUT" | awk '/Password:/ {print $2}')
+fi
+if [ -z "${PRIV_KEY:-}" ] || [ -z "${PUB_KEY:-}" ]; then
+  echo "[!] Не удалось получить Reality ключи через xray x25519"
+  echo "$KEY_OUTPUT"
+  exit 1
+fi
 
 UUID=$(cat /proc/sys/kernel/random/uuid)
 SHORT_ID=$(openssl rand -hex 8)
@@ -91,31 +99,103 @@ SNI="www.cloudflare.com"
 run_step "Создание конфигурации Xray" bash -c "
 cat > /usr/local/etc/xray/config.json <<EOF
 {
-  \"inbounds\": [{
-    \"listen\": \"0.0.0.0\",
-    \"port\": ${PORT},
-    \"protocol\": \"vless\",
-    \"settings\": {
-      \"clients\": [{\"id\": \"${UUID}\", \"flow\": \"xtls-rprx-vision\"}],
-      \"decryption\": \"none\"
+  \"inbounds\": [
+    {
+      \"listen\": \"127.0.0.1\",
+      \"port\": 1080,
+      \"protocol\": \"socks\",
+      \"settings\": {
+        \"udp\": true
+      },
+      \"sniffing\": {
+        \"enabled\": true,
+        \"destOverride\": [\"http\", \"tls\"]
+      }
     },
-    \"streamSettings\": {
-      \"network\": \"tcp\",
-      \"security\": \"reality\",
-      \"realitySettings\": {
-        \"dest\": \"${SNI}:443\",
-        \"serverNames\": [\"${SNI}\"],
-        \"privateKey\": \"${PRIV_KEY}\",
-        \"shortIds\": [\"${SHORT_ID}\"]
+    {
+      \"listen\": \"127.0.0.1\",
+      \"port\": 1081,
+      \"protocol\": \"http\",
+      \"settings\": {
+        \"accounts\": []
+      }
+    },
+    {
+      \"listen\": \"0.0.0.0\",
+      \"port\": ${PORT},
+      \"protocol\": \"vless\",
+      \"settings\": {
+        \"clients\": [
+          {
+            \"id\": \"${UUID}\",
+            \"flow\": \"xtls-rprx-vision\"
+          }
+        ],
+        \"decryption\": \"none\"
+      },
+      \"streamSettings\": {
+        \"network\": \"tcp\",
+        \"security\": \"reality\",
+        \"realitySettings\": {
+          \"dest\": \"${SNI}:443\",
+          \"serverNames\": [
+            \"${SNI}\"
+          ],
+          \"privateKey\": \"${PRIV_KEY}\",
+          \"shortIds\": [
+            \"${SHORT_ID}\"
+          ]
+        }
       }
     }
-  }],
-  \"outbounds\": [{\"protocol\": \"freedom\"}]
+  ],
+  \"outbounds\": [
+    {
+      \"protocol\": \"freedom\",
+      \"tag\": \"direct\",
+      \"settings\": {}
+    },
+    {
+      \"protocol\": \"blackhole\",
+      \"tag\": \"block\",
+      \"settings\": {}
+    }
+  ],
+  \"routing\": {
+    \"rules\": [
+      {
+        \"type\": \"field\",
+        \"ip\": [\"geoip:private\"],
+        \"outboundTag\": \"direct\"
+      },
+      {
+        \"type\": \"field\",
+        \"domain\": [\"geosite:category-ads\"],
+        \"outboundTag\": \"block\"
+      }
+    ]
+  }
 }
 EOF
 "
 
+if ! jq . /usr/local/etc/xray/config.json >/dev/null 2>&1; then
+  echo "[!] Ошибка JSON в /usr/local/etc/xray/config.json"
+  exit 1
+fi
+
+if ! xray run -test -config /usr/local/etc/xray/config.json >/dev/null 2>&1; then
+  echo "[!] Xray config test failed"
+  exit 1
+fi
+
 run_step "Перезапуск Xray" systemctl restart xray
+
+if ! systemctl is-active --quiet xray; then
+  echo "[!] Xray не запущен, последние логи:"
+  journalctl -u xray -n 80 --no-pager || true
+  exit 1
+fi
 
 # ===== NODE PROJECT =====
 run_step "npm install backend" npm install --prefix "$ROOT_DIR/backend"
@@ -141,6 +221,10 @@ else
 fi
 
 # ===== START =====
+pkill -f "npm --prefix $ROOT_DIR/backend run start" >/dev/null 2>&1 || true
+pkill -f "node .*backend/dist/index.js" >/dev/null 2>&1 || true
+pkill -f "vite preview" >/dev/null 2>&1 || true
+
 run_step "Запуск backend" bash -c "
 nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' SUB_BASE_URL='http://$IP' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
@@ -181,6 +265,7 @@ server {
     }
 
     location /api/ {
+        rewrite ^/api/api/(.*)$ /api/\$1 break;
         proxy_pass http://127.0.0.1:5174;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
@@ -244,7 +329,7 @@ fi
 sleep 2
 
 # ===== LINK =====
-LINK="vless://${UUID}@${IP}:${PORT}?type=tcp&security=reality&flow=xtls-rprx-vision&sni=${SNI}&pbk=${PUB_KEY}&sid=${SHORT_ID}#Remaware"
+LINK="vless://${UUID}@${IP}:${PORT}?type=tcp&security=reality&encryption=none&flow=xtls-rprx-vision&sni=${SNI}&fp=chrome&pbk=${PUB_KEY}&sid=${SHORT_ID}#PearVPN"
 
 # ===== DONE =====
 echo ""
