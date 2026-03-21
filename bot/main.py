@@ -229,7 +229,7 @@ def set_order_result(order_id: int, backend_user_id: str, vless_link: str) -> No
 def user_orders_text(tg_user_id: int) -> str:
     conn = db()
     rows = conn.execute(
-        "SELECT id, plan_title, price, status, created_at, vless_link FROM orders WHERE tg_user_id=? ORDER BY id DESC LIMIT 10",
+        "SELECT id, plan_title, price, status, created_at, vless_link, backend_user_id FROM orders WHERE tg_user_id=? ORDER BY id DESC LIMIT 10",
         (tg_user_id,),
     ).fetchall()
     conn.close()
@@ -250,8 +250,9 @@ def user_orders_text(tg_user_id: int) -> str:
             f"Статус: <code>{row['status']}</code>\n"
             f"Дата: <code>{row['created_at']}</code>"
         )
-        if row["vless_link"]:
-            lines.append(f"Ключ:\n<code>{row['vless_link']}</code>")
+        live_link = resolve_live_link(row["backend_user_id"], row["vless_link"])
+        if live_link:
+            lines.append(f"Ключ:\n<code>{live_link}</code>")
     return "\n".join(lines)
 
 
@@ -277,6 +278,17 @@ def set_notified(backend_user_id: str) -> None:
     )
     conn.commit()
     conn.close()
+
+def resolve_live_link(backend_user_id: str | None, fallback_link: str | None = None) -> str:
+    if backend_user_id:
+        try:
+            payload = api_get(f"/api/users/{backend_user_id}/link")
+            link = payload.get("link", "")
+            if link:
+                return str(link)
+        except Exception:
+            pass
+    return str(fallback_link or "")
 
 
 def cabinet_menu() -> types.InlineKeyboardMarkup:
@@ -343,9 +355,10 @@ def cabinet_text(tg_user_id: int) -> str:
     lines.append("• Продлить подписку")
     lines.append("• Открыть историю заказов")
     lines.append("• Быстро связаться с поддержкой")
-    if latest_approved["vless_link"]:
+    live_link = resolve_live_link(latest_approved["backend_user_id"], latest_approved["vless_link"])
+    if live_link:
         lines.append("\n🔐 <b>Ваш ключ:</b>")
-        lines.append(f"<code>{latest_approved['vless_link']}</code>")
+        lines.append(f"<code>{live_link}</code>")
 
     return "\n".join(lines)
 
