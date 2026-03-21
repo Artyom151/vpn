@@ -243,8 +243,6 @@ function derivePublicKeyFromPrivate(privateKey: string): string | null {
 }
 
 function resolvePublicKey(): { value: string | null; source: string } {
-  if (process.env.XRAY_PUBLIC_KEY) return { value: process.env.XRAY_PUBLIC_KEY, source: 'env.XRAY_PUBLIC_KEY' }
-
   const settings = readSettings()
   if (settings.publicKey) return { value: settings.publicKey, source: 'settings.json' }
 
@@ -265,6 +263,8 @@ function resolvePublicKey(): { value: string | null; source: string } {
     const derived = derivePublicKeyFromPrivate(privateKey)
     if (derived) return { value: derived, source: 'xray.privateKey(derived)' }
   }
+
+  if (process.env.XRAY_PUBLIC_KEY) return { value: process.env.XRAY_PUBLIC_KEY, source: 'env.XRAY_PUBLIC_KEY' }
 
   return { value: null, source: 'not_set' }
 }
@@ -479,7 +479,7 @@ function handleSubscription(req: express.Request, res: express.Response) {
   const totalBytes = Math.floor(totalGb * 1024 * 1024 * 1024)
   const expire = Math.floor(new Date(user.expiresAt).getTime() / 1000)
   const profileTitle = Buffer.from('Pear VPN').toString('base64')
-  const body = Buffer.from(`${link}\n`, 'utf8').toString('base64')
+  const body = `${link}\n`
 
   res.setHeader('Content-Type', 'text/plain; charset=utf-8')
   res.setHeader('profile-web-page-url', 'https://pear-vpn.local/')
