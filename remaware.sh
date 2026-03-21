@@ -162,17 +162,39 @@ if ! curl -fsS http://127.0.0.1:5174/api/health >/dev/null 2>&1; then
   exit 1
 fi
 
-# ===== NGINX PROXY FOR SUBSCRIPTION =====
-run_step "Настройка nginx для подписок" bash -c "
+# ===== NGINX PROXY (PANEL + API + SUB) =====
+run_step "Настройка nginx (panel/api/sub)" bash -c "
 cat > /etc/nginx/sites-available/pearvpn-sub.conf <<'EOF'
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name _;
 
+    location / {
+        proxy_pass http://127.0.0.1:4173;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header Connection '';
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:5174;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header Connection '';
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
     location /sub/ {
         proxy_pass http://127.0.0.1:5174;
+        proxy_http_version 1.1;
         proxy_set_header Host \$host;
+        proxy_set_header Connection '';
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
@@ -180,7 +202,9 @@ server {
 
     location /api/sub/ {
         proxy_pass http://127.0.0.1:5174;
+        proxy_http_version 1.1;
         proxy_set_header Host \$host;
+        proxy_set_header Connection '';
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
@@ -196,6 +220,15 @@ systemctl restart nginx
 run_step "Запуск frontend" bash -c "
 nohup npm --prefix '$ROOT_DIR/frontend' run preview -- --host 0.0.0.0 --port 4173 >> '$LOG_DIR/frontend.log' 2>&1 &
 "
+
+echo "[*] Проверка nginx endpoint..."
+for i in {1..20}; do
+  if curl -fsS "http://127.0.0.1/api/health" >/dev/null 2>&1; then
+    echo "[✓] Nginx proxy /api работает"
+    break
+  fi
+  sleep 1
+done
 
 if [ -f "$ROOT_DIR/bot/main.py" ] && [ -f "$ROOT_DIR/bot/.env" ] && [ -x "$ROOT_DIR/bot/.venv/bin/python" ]; then
   run_step "Запуск telegram bot" bash -c "
@@ -221,11 +254,11 @@ echo "========================================="
 echo ""
 
 echo "🌐 Панель:"
-echo "http://$IP:4173"
+echo "http://$IP/"
 echo ""
 
 echo "🔧 Backend API:"
-echo "http://$IP:5174"
+echo "http://$IP/api/health"
 echo ""
 echo "🔗 Subscription (через nginx):"
 echo "http://$IP/sub/<TOKEN>"

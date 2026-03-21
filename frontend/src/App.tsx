@@ -31,7 +31,9 @@ type VpnUser = {
   subscriptionUrl?: string | null
 }
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:5174'
+const API_BASE_RAW = import.meta.env.VITE_API_URL ?? 'http://localhost:5174'
+const API_BASE_NORMALIZED = API_BASE_RAW.replace(/\/+$/, '')
+const API_BASE = API_BASE_NORMALIZED.endsWith('/api') ? API_BASE_NORMALIZED : `${API_BASE_NORMALIZED}/api`
 
 const text = {
   ru: {
