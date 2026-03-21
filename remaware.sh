@@ -93,33 +93,14 @@ SHORT_ID=$(openssl rand -hex 8)
 IP=$(curl -s ifconfig.me)
 
 PORT=443
-SNI="www.cloudflare.com"
+SNI="www.microsoft.com"
 
 # ===== XRAY CONFIG =====
 run_step "Создание конфигурации Xray" bash -c "
 cat > /usr/local/etc/xray/config.json <<EOF
 {
+  \"log\": { \"loglevel\": \"debug\" },
   \"inbounds\": [
-    {
-      \"listen\": \"127.0.0.1\",
-      \"port\": 1080,
-      \"protocol\": \"socks\",
-      \"settings\": {
-        \"udp\": true
-      },
-      \"sniffing\": {
-        \"enabled\": true,
-        \"destOverride\": [\"http\", \"tls\"]
-      }
-    },
-    {
-      \"listen\": \"127.0.0.1\",
-      \"port\": 1081,
-      \"protocol\": \"http\",
-      \"settings\": {
-        \"accounts\": []
-      }
-    },
     {
       \"listen\": \"0.0.0.0\",
       \"port\": ${PORT},
@@ -138,13 +119,9 @@ cat > /usr/local/etc/xray/config.json <<EOF
         \"security\": \"reality\",
         \"realitySettings\": {
           \"dest\": \"${SNI}:443\",
-          \"serverNames\": [
-            \"${SNI}\"
-          ],
+          \"serverNames\": [\"${SNI}\"],
           \"privateKey\": \"${PRIV_KEY}\",
-          \"shortIds\": [
-            \"${SHORT_ID}\"
-          ]
+          \"shortIds\": [\"${SHORT_ID}\"]
         }
       }
     }
@@ -152,29 +129,9 @@ cat > /usr/local/etc/xray/config.json <<EOF
   \"outbounds\": [
     {
       \"protocol\": \"freedom\",
-      \"tag\": \"direct\",
-      \"settings\": {}
-    },
-    {
-      \"protocol\": \"blackhole\",
-      \"tag\": \"block\",
       \"settings\": {}
     }
-  ],
-  \"routing\": {
-    \"rules\": [
-      {
-        \"type\": \"field\",
-        \"ip\": [\"geoip:private\"],
-        \"outboundTag\": \"direct\"
-      },
-      {
-        \"type\": \"field\",
-        \"domain\": [\"geosite:category-ads\"],
-        \"outboundTag\": \"block\"
-      }
-    ]
-  }
+  ]
 }
 EOF
 "

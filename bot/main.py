@@ -387,7 +387,11 @@ def ensure_user_link(order_id: int, days: int, tg_user_id: int) -> tuple[str, st
         },
     )
     backend_user = payload.get("user", {})
-    link = payload.get("link", "")
+    sync = payload.get("sync", {})
+    if not sync.get("synced", False):
+        raise RuntimeError(f"xray sync failed: {sync.get('message', 'unknown error')}")
+    link_payload = api_get(f"/api/users/{backend_user.get('id')}/link")
+    link = link_payload.get("link", "")
     subscription_url = payload.get("subscriptionUrl", "")
     if not link:
         raise RuntimeError("failed to generate vless link")

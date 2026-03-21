@@ -220,7 +220,7 @@ function buildUserLink(user: VpnUser): string | null {
     ip: process.env.PUBLIC_IP ?? getPrimaryAddress() ?? '0.0.0.0',
     port: Number(inbound?.port ?? 443),
     flow: user.flow,
-    sni: reality?.serverNames?.[0] ?? 'www.cloudflare.com',
+    sni: reality?.serverNames?.[0] ?? 'www.microsoft.com',
     pbk: publicKey,
     sid: reality?.shortIds?.[0] ?? randomBytes(8).toString('hex'),
     name: `Pear VPN | ${user.username}`,
@@ -287,7 +287,7 @@ function makeClientLink(args: {
     pbk: args.pbk,
     sid: args.sid,
   })
-  return `vless://${args.uuid}@${args.ip}:${args.port}?${q.toString()}#${encodeURIComponent(args.name)}`
+  return `vless://${args.uuid}@${args.ip}:${args.port}?${q.toString()}#PearVPN`
 }
 
 function syncXrayClients(users: VpnUser[]): { synced: boolean; message: string } {
@@ -313,7 +313,7 @@ function buildDashboard() {
   const reality = inbound?.streamSettings?.realitySettings
   const ip = process.env.PUBLIC_IP ?? getPrimaryAddress() ?? '0.0.0.0'
   const port = Number(inbound?.port ?? 443)
-  const sni = reality?.serverNames?.[0] ?? 'www.cloudflare.com'
+  const sni = reality?.serverNames?.[0] ?? 'www.microsoft.com'
   const shortId = reality?.shortIds?.[0] ?? randomBytes(8).toString('hex')
   const publicKey = resolvePublicKey()
   const activeUsers = db.users.filter((user) => computeUserStatus(user) === 'active').length
