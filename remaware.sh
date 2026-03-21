@@ -121,7 +121,19 @@ run_step "npm install backend" npm install --prefix "$ROOT_DIR/backend"
 run_step "npm install frontend" npm install --prefix "$ROOT_DIR/frontend"
 
 run_step "build backend" npm --prefix "$ROOT_DIR/backend" run build
-run_step "build frontend" npm --prefix "$ROOT_DIR/frontend" run build
+run_step "build frontend" bash -c "VITE_API_URL='http://$IP:5174' npm --prefix '$ROOT_DIR/frontend' run build"
+
+# ===== TELEGRAM BOT (PYTHON) =====
+if [ -f "$ROOT_DIR/bot/main.py" ]; then
+  if command -v python3 >/dev/null 2>&1; then
+    run_step "setup bot venv" python3 -m venv "$ROOT_DIR/bot/.venv"
+    run_step "install bot deps" "$ROOT_DIR/bot/.venv/bin/pip" install -r "$ROOT_DIR/bot/requirements.txt"
+  else
+    echo "[!] python3 не найден, bot не будет установлен"
+  fi
+else
+  echo "[!] bot/main.py не найден, пропускаем Telegram Bot"
+fi
 
 # ===== START =====
 run_step "Запуск backend" bash -c "
@@ -129,9 +141,36 @@ nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
 "
 
+# ===== BACKEND HEALTHCHECK =====
+echo "[*] Ожидание backend API..."
+for i in {1..20}; do
+  if curl -fsS http://127.0.0.1:5174/api/health >/dev/null 2>&1; then
+    echo "[✓] Backend API доступен"
+    break
+  fi
+  sleep 1
+done
+
+if ! curl -fsS http://127.0.0.1:5174/api/health >/dev/null 2>&1; then
+  echo "[!] Backend не поднялся. Последние строки лога:"
+  tail -n 80 "$LOG_DIR/backend.log" || true
+  exit 1
+fi
+
 run_step "Запуск frontend" bash -c "
 nohup npm --prefix '$ROOT_DIR/frontend' run preview -- --host 0.0.0.0 --port 4173 >> '$LOG_DIR/frontend.log' 2>&1 &
 "
+
+if [ -f "$ROOT_DIR/bot/main.py" ] && [ -f "$ROOT_DIR/bot/.env" ] && [ -x "$ROOT_DIR/bot/.venv/bin/python" ]; then
+  run_step "Запуск telegram bot" bash -c "
+  set -a
+  . '$ROOT_DIR/bot/.env'
+  set +a
+  nohup '$ROOT_DIR/bot/.venv/bin/python' '$ROOT_DIR/bot/main.py' >> '$LOG_DIR/bot.log' 2>&1 &
+  "
+elif [ -f "$ROOT_DIR/bot/main.py" ]; then
+  echo "[!] bot найден, но не запущен (нужен bot/.env и bot/.venv/bin/python)"
+fi
 
 sleep 2
 
@@ -161,8 +200,9 @@ echo "📂 Логи:"
 echo "install:  $LOG_FILE"
 echo "backend:  $LOG_DIR/backend.log"
 echo "frontend: $LOG_DIR/frontend.log"
+echo "bot:      $LOG_DIR/bot.log"
 echo ""
 
 echo "🧪 Проверка:"
-echo "curl http://127.0.0.1:5174"
+echo "curl http://127.0.0.1:5174/api/health"
 echo ""
