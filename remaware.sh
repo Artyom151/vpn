@@ -78,9 +78,9 @@ fi
 
 KEY_OUTPUT=$(xray x25519)
 PRIV_KEY=$(echo "$KEY_OUTPUT" | awk '/PrivateKey:/ {print $2}')
-PUB_KEY=$(echo "$KEY_OUTPUT" | awk '/PublicKey:/ {print $2}')
+PUB_KEY=$(echo "$KEY_OUTPUT" | awk '/Password:/ {print $2}')
 if [ -z "${PUB_KEY:-}" ]; then
-  PUB_KEY=$(echo "$KEY_OUTPUT" | awk '/Password:/ {print $2}')
+  PUB_KEY=$(echo "$KEY_OUTPUT" | awk '/PublicKey:/ {print $2}')
 fi
 if [ -z "${PRIV_KEY:-}" ] || [ -z "${PUB_KEY:-}" ]; then
   echo "[!] Не удалось получить Reality ключи через xray x25519"
@@ -226,7 +226,7 @@ pkill -f "node .*backend/dist/index.js" >/dev/null 2>&1 || true
 pkill -f "vite preview" >/dev/null 2>&1 || true
 
 run_step "Запуск backend" bash -c "
-nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' SUB_BASE_URL='http://$IP' \
+nohup env PUBLIC_IP='$IP' SUB_BASE_URL='http://$IP' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
 "
 

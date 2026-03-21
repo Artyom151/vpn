@@ -264,8 +264,6 @@ function resolvePublicKey(): { value: string | null; source: string } {
     if (derived) return { value: derived, source: 'xray.privateKey(derived)' }
   }
 
-  if (process.env.XRAY_PUBLIC_KEY) return { value: process.env.XRAY_PUBLIC_KEY, source: 'env.XRAY_PUBLIC_KEY' }
-
   return { value: null, source: 'not_set' }
 }
 
@@ -540,23 +538,40 @@ app.post('/api/settings/public-key', (req, res) => {
 })
 
 app.post('/api/keys/client', (req, res) => {
+  const db = readDb()
   const dashboard = buildDashboard()
-  const name = String(req.body?.name ?? 'PearVPN-Client')
-  const uuid = randomUUID()
-  const shortId = randomBytes(8).toString('hex')
   const pbk = String(dashboard.vpn.publicKey ?? '')
   if (!pbk) return res.status(400).json({ error: 'public key is not set. use /api/settings/public-key' })
-  const link = makeClientLink({
-    uuid,
-    ip: dashboard.vpn.address,
-    port: dashboard.vpn.port,
+
+  const username = String(req.body?.name ?? '').trim() || `client_${db.users.length + 1}`
+  const user: VpnUser = {
+    id: randomUUID(),
+    username,
+    uuid: randomUUID(),
     flow: 'xtls-rprx-vision',
-    sni: dashboard.vpn.sni,
-    pbk,
-    sid: shortId,
-    name,
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    expiresAt: parseExpiresAt(req.body),
+    trafficLimitGb: Number(req.body?.trafficLimitGb ?? 100),
+    usedTrafficGb: 0,
+    deviceLimit: Number(req.body?.deviceLimit ?? 1),
+    subToken: randomBytes(16).toString('hex'),
+    note: String(req.body?.note ?? ''),
+  }
+
+  db.users.push(user)
+  writeDb(db)
+  const sync = syncXrayClients(db.users)
+  const normalized = normalizeUser(user)
+  const link = buildUserLink(normalized)
+  if (!link) return res.status(400).json({ error: 'failed to build user link from current xray config' })
+
+  res.status(201).json({
+    user: normalized,
+    link,
+    subscriptionUrl: `${SUB_BASE_URL}/api/sub/${normalized.subToken}`,
+    sync,
   })
-  res.json({ uuid, shortId, link })
 })
 
 app.get('/api/users/:id/link', (req, res) => {
