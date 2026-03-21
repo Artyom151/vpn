@@ -43,7 +43,7 @@ run_step() {
 # ===== INSTALL =====
 install_packages() {
   apt-get update -qq
-  apt-get install $APT_FLAGS curl jq openssl net-tools ufw iptables-persistent ca-certificates gnupg2 python3 python3-venv python3-pip > /dev/null 2>&1
+  apt-get install $APT_FLAGS curl jq openssl net-tools ufw iptables-persistent ca-certificates gnupg2 python3 python3-venv python3-pip nginx > /dev/null 2>&1
 }
 
 install_node() {
@@ -57,6 +57,7 @@ run_step "Установка Node.js" install_node
 # ===== FIREWALL =====
 run_step "Настройка firewall" bash -c '
 ufw allow 22/tcp >/dev/null 2>&1
+ufw allow 80/tcp >/dev/null 2>&1
 ufw allow 443/tcp >/dev/null 2>&1
 ufw allow 4173/tcp >/dev/null 2>&1
 ufw allow 5174/tcp >/dev/null 2>&1
@@ -161,6 +162,37 @@ if ! curl -fsS http://127.0.0.1:5174/api/health >/dev/null 2>&1; then
   exit 1
 fi
 
+# ===== NGINX PROXY FOR SUBSCRIPTION =====
+run_step "Настройка nginx для подписок" bash -c "
+cat > /etc/nginx/sites-available/pearvpn-sub.conf <<'EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    location /sub/ {
+        proxy_pass http://127.0.0.1:5174;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location /api/sub/ {
+        proxy_pass http://127.0.0.1:5174;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+EOF
+rm -f /etc/nginx/sites-enabled/default
+ln -sf /etc/nginx/sites-available/pearvpn-sub.conf /etc/nginx/sites-enabled/pearvpn-sub.conf
+nginx -t
+systemctl restart nginx
+"
+
 run_step "Запуск frontend" bash -c "
 nohup npm --prefix '$ROOT_DIR/frontend' run preview -- --host 0.0.0.0 --port 4173 >> '$LOG_DIR/frontend.log' 2>&1 &
 "
@@ -194,6 +226,9 @@ echo ""
 
 echo "🔧 Backend API:"
 echo "http://$IP:5174"
+echo ""
+echo "🔗 Subscription (через nginx):"
+echo "http://$IP/sub/<TOKEN>"
 echo ""
 
 echo "🔐 VLESS:"

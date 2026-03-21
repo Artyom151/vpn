@@ -449,7 +449,7 @@ app.get('/api/users/:id/subscription', (req, res) => {
   res.json({ subscriptionUrl: `${SUB_BASE_URL}/api/sub/${normalized.subToken}` })
 })
 
-app.get('/api/sub/:token', (req, res) => {
+function handleSubscription(req: express.Request, res: express.Response) {
   const db = readDb()
   const user = db.users.map((u) => normalizeUser(u)).find((u) => u.subToken === req.params.token)
   if (!user) return res.status(404).send('not found')
@@ -473,7 +473,10 @@ app.get('/api/sub/:token', (req, res) => {
   res.setHeader('content-disposition', 'inline; filename="pear-vpn-subscription.txt"')
   res.setHeader('subscription-userinfo', `upload=0; download=${usedBytes}; total=${totalBytes}; expire=${expire}`)
   res.send(body)
-})
+}
+
+app.get('/api/sub/:token', handleSubscription)
+app.get('/sub/:token', handleSubscription)
 
 app.post('/api/users/:id/rotate', (req, res) => {
   const db = readDb()
