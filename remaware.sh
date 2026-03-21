@@ -141,7 +141,7 @@ fi
 
 # ===== START =====
 run_step "Запуск backend" bash -c "
-nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' \
+nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' SUB_BASE_URL='http://$IP:5174' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
 "
 

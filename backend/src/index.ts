@@ -39,7 +39,25 @@ const XRAY_CONFIG_PATH = process.env.XRAY_CONFIG_PATH ?? '/usr/local/etc/xray/co
 const LOG_DIR = process.env.NODE_LOG_DIR ?? '/var/log/remaware'
 const DB_PATH = process.env.DB_PATH ?? path.join(process.cwd(), 'data', 'users.json')
 const SETTINGS_PATH = process.env.SETTINGS_PATH ?? path.join(process.cwd(), 'data', 'settings.json')
-const SUB_BASE_URL = process.env.SUB_BASE_URL ?? `http://localhost:${PORT}`
+function normalizeSubBaseUrl(raw: string | undefined, fallbackPort: number): string {
+  const source = (raw ?? '').trim()
+  const publicIp = (process.env.PUBLIC_IP ?? '').trim()
+  let value = source || (publicIp ? `http://${publicIp}:${fallbackPort}` : `http://localhost:${fallbackPort}`)
+  if (!value.startsWith('http://') && !value.startsWith('https://')) {
+    value = `http://${value}`
+  }
+  value = value.replace(/\/:([0-9]+)/g, ':$1')
+  if (publicIp) {
+    value = value
+      .replace('http://localhost:', `http://${publicIp}:`)
+      .replace('https://localhost:', `https://${publicIp}:`)
+      .replace('http://127.0.0.1:', `http://${publicIp}:`)
+      .replace('https://127.0.0.1:', `https://${publicIp}:`)
+  }
+  value = value.replace(/\/+$/, '')
+  return value
+}
+const SUB_BASE_URL = normalizeSubBaseUrl(process.env.SUB_BASE_URL, PORT)
 
 app.use(cors())
 app.use(express.json())
