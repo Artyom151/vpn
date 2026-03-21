@@ -9,15 +9,15 @@ LOG_DIR="/var/log/remaware"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/install.log"
 
-# ====== CONFIG ======
+# ===== CONFIG =====
 export DEBIAN_FRONTEND=noninteractive
 APT_FLAGS="-y -qq -o=Dpkg::Use-Pty=0"
 echo '$nrconf{restart} = "a";' > /etc/needrestart/conf.d/99-auto.conf
 
-# ====== LOGGING ======
-exec > "$LOG_FILE" 2>&1
+# ===== LOGGING (и файл, и консоль) =====
+exec > >(tee -a "$LOG_FILE") 2>&1
 
-# ====== SPINNER ======
+# ===== SPINNER =====
 spinner() {
   local pid=$1
   local msg=$2
@@ -40,13 +40,7 @@ run_step() {
   spinner $! "$msg"
 }
 
-# ====== DETECT PKG ======
-detect_pkg_manager() {
-  if command -v apt-get >/dev/null; then echo "apt"; return; fi
-  echo "unsupported"
-}
-
-# ====== INSTALL PACKAGES ======
+# ===== INSTALL =====
 install_packages() {
   apt-get update -qq
   apt-get install $APT_FLAGS curl jq openssl net-tools ufw iptables-persistent ca-certificates gnupg2 > /dev/null 2>&1
@@ -57,36 +51,33 @@ install_node() {
   apt-get install $APT_FLAGS nodejs > /dev/null 2>&1
 }
 
-# ====== START ======
-PKG_MANAGER=$(detect_pkg_manager)
-[ "$PKG_MANAGER" = "unsupported" ] && echo "[!] Unsupported OS" && exit 1
-
 run_step "Установка пакетов" install_packages
 run_step "Установка Node.js" install_node
 
-# ====== FIREWALL ======
+# ===== FIREWALL =====
 run_step "Настройка firewall" bash -c '
 ufw allow 22/tcp >/dev/null 2>&1
 ufw allow 443/tcp >/dev/null 2>&1
+ufw allow 4173/tcp >/dev/null 2>&1
+ufw allow 5174/tcp >/dev/null 2>&1
 ufw --force enable >/dev/null 2>&1
 '
 
-# ====== SYSCTL ======
+# ===== SYSCTL =====
 run_step "Настройка sysctl" bash -c '
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
 sysctl -p >/dev/null 2>&1
 '
 
-# ====== XRAY ======
+# ===== XRAY =====
 if ! command -v xray &> /dev/null; then
   run_step "Установка Xray" bash -c 'bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install > /dev/null 2>&1'
 fi
 
-# ====== KEYS ======
 KEY_OUTPUT=$(xray x25519)
-PRIV_KEY=$(echo "$KEY_OUTPUT" | grep "PrivateKey:" | awk '{print $2}')
-PUB_KEY=$(echo "$KEY_OUTPUT" | grep "PublicKey:" | awk '{print $2}')
+PRIV_KEY=$(echo "$KEY_OUTPUT" | awk '/PrivateKey:/ {print $2}')
+PUB_KEY=$(echo "$KEY_OUTPUT" | awk '/PublicKey:/ {print $2}')
 
 UUID=$(cat /proc/sys/kernel/random/uuid)
 SHORT_ID=$(openssl rand -hex 8)
@@ -95,7 +86,7 @@ IP=$(curl -s ifconfig.me)
 PORT=443
 SNI="www.cloudflare.com"
 
-# ====== CONFIG ======
+# ===== XRAY CONFIG =====
 run_step "Создание конфигурации Xray" bash -c "
 cat > /usr/local/etc/xray/config.json <<EOF
 {
@@ -125,14 +116,14 @@ EOF
 
 run_step "Перезапуск Xray" systemctl restart xray
 
-# ====== NPM ======
-run_step "Установка backend" npm install --prefix "$ROOT_DIR/backend"
-run_step "Установка frontend" npm install --prefix "$ROOT_DIR/frontend"
+# ===== NODE PROJECT =====
+run_step "npm install backend" npm install --prefix "$ROOT_DIR/backend"
+run_step "npm install frontend" npm install --prefix "$ROOT_DIR/frontend"
 
-run_step "Сборка backend" npm --prefix "$ROOT_DIR/backend" run build
-run_step "Сборка frontend" npm --prefix "$ROOT_DIR/frontend" run build
+run_step "build backend" npm --prefix "$ROOT_DIR/backend" run build
+run_step "build frontend" npm --prefix "$ROOT_DIR/frontend" run build
 
-# ====== START SERVICES ======
+# ===== START =====
 run_step "Запуск backend" bash -c "
 nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
@@ -142,13 +133,36 @@ run_step "Запуск frontend" bash -c "
 nohup npm --prefix '$ROOT_DIR/frontend' run preview -- --host 0.0.0.0 --port 4173 >> '$LOG_DIR/frontend.log' 2>&1 &
 "
 
-# ====== DONE ======
+sleep 2
+
+# ===== LINK =====
+LINK="vless://${UUID}@${IP}:${PORT}?type=tcp&security=reality&flow=xtls-rprx-vision&sni=${SNI}&pbk=${PUB_KEY}&sid=${SHORT_ID}#Remaware"
+
+# ===== DONE =====
 echo ""
 echo "========================================="
-echo "[✓] Установка завершена"
+echo "[✓] УСТАНОВКА ЗАВЕРШЕНА"
 echo "========================================="
 echo ""
-echo "IP: $IP"
-echo "PORT: $PORT"
+
+echo "🌐 Панель:"
+echo "http://$IP:4173"
 echo ""
-echo "Логи: $LOG_FILE"
+
+echo "🔧 Backend API:"
+echo "http://$IP:5174"
+echo ""
+
+echo "🔐 VLESS:"
+echo "$LINK"
+echo ""
+
+echo "📂 Логи:"
+echo "install:  $LOG_FILE"
+echo "backend:  $LOG_DIR/backend.log"
+echo "frontend: $LOG_DIR/frontend.log"
+echo ""
+
+echo "🧪 Проверка:"
+echo "curl http://127.0.0.1:5174"
+echo ""
