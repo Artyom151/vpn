@@ -43,7 +43,7 @@ run_step() {
 # ===== INSTALL =====
 install_packages() {
   apt-get update -qq
-  apt-get install $APT_FLAGS curl jq openssl net-tools ufw iptables-persistent ca-certificates gnupg2 > /dev/null 2>&1
+  apt-get install $APT_FLAGS curl jq openssl net-tools ufw iptables-persistent ca-certificates gnupg2 python3 python3-venv python3-pip > /dev/null 2>&1
 }
 
 install_node() {
@@ -126,8 +126,12 @@ run_step "build frontend" bash -c "VITE_API_URL='http://$IP:5174' npm --prefix '
 # ===== TELEGRAM BOT (PYTHON) =====
 if [ -f "$ROOT_DIR/bot/main.py" ]; then
   if command -v python3 >/dev/null 2>&1; then
-    run_step "setup bot venv" python3 -m venv "$ROOT_DIR/bot/.venv"
-    run_step "install bot deps" "$ROOT_DIR/bot/.venv/bin/pip" install -r "$ROOT_DIR/bot/requirements.txt"
+    run_step "setup/install bot deps" bash -c "
+      cd '$ROOT_DIR/bot'
+      python3 -m venv .venv
+      source .venv/bin/activate
+      pip install -r requirements.txt
+    "
   else
     echo "[!] python3 не найден, bot не будет установлен"
   fi
