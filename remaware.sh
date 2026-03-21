@@ -122,7 +122,7 @@ run_step "npm install backend" npm install --prefix "$ROOT_DIR/backend"
 run_step "npm install frontend" npm install --prefix "$ROOT_DIR/frontend"
 
 run_step "build backend" npm --prefix "$ROOT_DIR/backend" run build
-run_step "build frontend" bash -c "VITE_API_URL='http://$IP:5174' npm --prefix '$ROOT_DIR/frontend' run build"
+run_step "build frontend" bash -c "VITE_API_URL='http://$IP' npm --prefix '$ROOT_DIR/frontend' run build"
 
 # ===== TELEGRAM BOT (PYTHON) =====
 if [ -f "$ROOT_DIR/bot/main.py" ]; then
@@ -142,7 +142,7 @@ fi
 
 # ===== START =====
 run_step "Запуск backend" bash -c "
-nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' SUB_BASE_URL='http://$IP:5174' \
+nohup env XRAY_PUBLIC_KEY='$PUB_KEY' PUBLIC_IP='$IP' SUB_BASE_URL='http://$IP' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
 "
 

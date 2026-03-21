@@ -54,6 +54,19 @@ function normalizeSubBaseUrl(raw: string | undefined, fallbackPort: number): str
       .replace('http://127.0.0.1:', `http://${publicIp}:`)
       .replace('https://127.0.0.1:', `https://${publicIp}:`)
   }
+  try {
+    const url = new URL(value)
+    // Force human/public URL without backend dev port, since subscription is proxied via nginx :80/:443.
+    if (url.port === '5174') {
+      url.port = ''
+    }
+    if (url.port === '80' || url.port === '443') {
+      url.port = ''
+    }
+    value = url.toString()
+  } catch {
+    // keep original when URL parser fails
+  }
   value = value.replace(/\/+$/, '')
   return value
 }
