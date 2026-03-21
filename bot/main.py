@@ -351,9 +351,7 @@ def cabinet_text(tg_user_id: int) -> str:
 
 
 def ensure_user_link(order_id: int, days: int, tg_user_id: int) -> tuple[str, str, str]:
-    # 1) Create backend user.
     username = f"tg_{tg_user_id}_{order_id}"
-    customer = None
     conn = db()
     customer = conn.execute(
         "SELECT username, full_name FROM customers WHERE tg_user_id=?",
@@ -362,29 +360,26 @@ def ensure_user_link(order_id: int, days: int, tg_user_id: int) -> tuple[str, st
     conn.close()
     plan = next((value for value in PLANS.values() if value["days"] == days), None)
 
-    new_user = api_post(
-        "/api/users",
+    payload = api_post(
+        "/api/keys/client",
         {
-            "username": username,
-            "days": days,
+            "name": username,
+            "durationSeconds": int(days) * 24 * 60 * 60,
+            "trafficLimitGb": plan["traffic_gb"] if plan else 100,
+            "deviceLimit": plan["devices"] if plan else 1,
             "tgUserId": tg_user_id,
             "tgUsername": customer["username"] if customer else None,
             "tgFullName": customer["full_name"] if customer else None,
-            "trafficLimitGb": plan["traffic_gb"] if plan else 100,
-            "deviceLimit": plan["devices"] if plan else 1,
             "note": f"telegram order #{order_id}",
         },
     )
-    backend_user = new_user["user"]
-    # 2) Sync users -> xray.
-    api_post("/api/users/sync")
-    # 3) Generate user-specific vless link.
-    link_payload = api_get(f"/api/users/{backend_user['id']}/link")
-    link = link_payload.get("link", "")
-    sub_payload = api_get(f"/api/users/{backend_user['id']}/subscription")
-    subscription_url = sub_payload.get("subscriptionUrl", "")
+    backend_user = payload.get("user", {})
+    link = payload.get("link", "")
+    subscription_url = payload.get("subscriptionUrl", "")
     if not link:
         raise RuntimeError("failed to generate vless link")
+    if not backend_user.get("id"):
+        raise RuntimeError("backend did not return user id")
     return backend_user["id"], link, subscription_url
 
 

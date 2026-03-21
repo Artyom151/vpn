@@ -547,6 +547,9 @@ app.post('/api/keys/client', (req, res) => {
   const user: VpnUser = {
     id: randomUUID(),
     username,
+    tgUserId: typeof req.body?.tgUserId === 'number' ? req.body.tgUserId : undefined,
+    tgUsername: typeof req.body?.tgUsername === 'string' ? req.body.tgUsername : undefined,
+    tgFullName: typeof req.body?.tgFullName === 'string' ? req.body.tgFullName : undefined,
     uuid: randomUUID(),
     flow: 'xtls-rprx-vision',
     status: 'active',
