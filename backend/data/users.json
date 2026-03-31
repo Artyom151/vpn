@@ -1,21 +1,3 @@
 {
-  "users": [
-    {
-      "id": "a978f8fd-bde4-490f-9bcb-c73bec0999fe",
-      "username": "amethyst",
-      "tgUserId": 7944539798,
-      "tgUsername": "@torusov",
-      "tgFullName": "torusov",
-      "uuid": "55f0b1e8-82c8-4c0c-a422-58f9f2bef6ed",
-      "flow": "xtls-rprx-vision",
-      "status": "active",
-      "createdAt": "2026-03-21T11:22:11.093Z",
-      "expiresAt": "2026-03-21T11:23:11.093Z",
-      "trafficLimitGb": 100,
-      "usedTrafficGb": 0,
-      "deviceLimit": 1,
-      "subToken": "390bb9bd5ee3f2626b00487b703ef90c",
-      "note": ""
-    }
-  ]
+  "users": []
 }

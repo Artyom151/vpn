@@ -8,6 +8,8 @@ ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LOG_DIR="/var/log/remaware"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/install.log"
+DOMAIN="${DOMAIN:-pearvpn.ru}"
+PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-https://$DOMAIN}"
 
 # ===== CONFIG =====
 export DEBIAN_FRONTEND=noninteractive
@@ -159,7 +161,7 @@ run_step "npm install backend" npm install --prefix "$ROOT_DIR/backend"
 run_step "npm install frontend" npm install --prefix "$ROOT_DIR/frontend"
 
 run_step "build backend" npm --prefix "$ROOT_DIR/backend" run build
-run_step "build frontend" bash -c "VITE_API_URL='http://$IP' npm --prefix '$ROOT_DIR/frontend' run build"
+run_step "build frontend" bash -c "VITE_API_URL='$PUBLIC_BASE_URL' npm --prefix '$ROOT_DIR/frontend' run build"
 
 # ===== TELEGRAM BOT (PYTHON) =====
 if [ -f "$ROOT_DIR/bot/main.py" ]; then
@@ -183,7 +185,7 @@ pkill -f "node .*backend/dist/index.js" >/dev/null 2>&1 || true
 pkill -f "vite preview" >/dev/null 2>&1 || true
 
 run_step "Запуск backend" bash -c "
-nohup env PUBLIC_IP='$IP' SUB_BASE_URL='http://$IP' \
+nohup env PUBLIC_IP='$IP' SUB_BASE_URL='$PUBLIC_BASE_URL' FORCE_DOMAIN_SUB_URL='1' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
 "
 
@@ -205,11 +207,11 @@ fi
 
 # ===== NGINX PROXY (PANEL + API + SUB) =====
 run_step "Настройка nginx (panel/api/sub)" bash -c "
-cat > /etc/nginx/sites-available/pearvpn-sub.conf <<'EOF'
+cat > /etc/nginx/sites-available/pearvpn-sub.conf <<EOF
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name _;
+    server_name ${DOMAIN} www.${DOMAIN} _;
 
     location / {
         proxy_pass http://127.0.0.1:4173;
@@ -277,7 +279,7 @@ if [ -f "$ROOT_DIR/bot/main.py" ] && [ -f "$ROOT_DIR/bot/.env" ] && [ -x "$ROOT_
   set -a
   . '$ROOT_DIR/bot/.env'
   set +a
-  nohup '$ROOT_DIR/bot/.venv/bin/python' '$ROOT_DIR/bot/main.py' >> '$LOG_DIR/bot.log' 2>&1 &
+  nohup env PEAR_API_URL='http://127.0.0.1:5174' PUBLIC_SUB_BASE='$PUBLIC_BASE_URL' '$ROOT_DIR/bot/.venv/bin/python' '$ROOT_DIR/bot/main.py' >> '$LOG_DIR/bot.log' 2>&1 &
   "
 elif [ -f "$ROOT_DIR/bot/main.py" ]; then
   echo "[!] bot найден, но не запущен (нужен bot/.env и bot/.venv/bin/python)"
@@ -296,14 +298,14 @@ echo "========================================="
 echo ""
 
 echo "🌐 Панель:"
-echo "http://$IP/"
+echo "$PUBLIC_BASE_URL/"
 echo ""
 
 echo "🔧 Backend API:"
-echo "http://$IP/api/health"
+echo "$PUBLIC_BASE_URL/api/health"
 echo ""
 echo "🔗 Subscription (через nginx):"
-echo "http://$IP/sub/<TOKEN>"
+echo "$PUBLIC_BASE_URL/sub/<TOKEN>"
 echo ""
 
 echo "🔐 VLESS:"

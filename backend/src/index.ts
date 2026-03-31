@@ -42,7 +42,10 @@ const SETTINGS_PATH = process.env.SETTINGS_PATH ?? path.join(process.cwd(), 'dat
 function normalizeSubBaseUrl(raw: string | undefined, fallbackPort: number): string {
   const source = (raw ?? '').trim()
   const publicIp = (process.env.PUBLIC_IP ?? '').trim()
-  let value = source || (publicIp ? `http://${publicIp}:${fallbackPort}` : `http://localhost:${fallbackPort}`)
+  let value = source || 'https://pearvpn.ru'
+  if (!source && publicIp && !process.env.FORCE_DOMAIN_SUB_URL) {
+    value = `http://${publicIp}:${fallbackPort}`
+  }
   if (!value.startsWith('http://') && !value.startsWith('https://')) {
     value = `http://${value}`
   }
@@ -71,6 +74,10 @@ function normalizeSubBaseUrl(raw: string | undefined, fallbackPort: number): str
   return value
 }
 const SUB_BASE_URL = normalizeSubBaseUrl(process.env.SUB_BASE_URL, PORT)
+
+function buildSubscriptionUrl(token: string): string {
+  return `${SUB_BASE_URL}/sub/${token}`
+}
 
 app.use(cors())
 app.use(express.json())
@@ -407,7 +414,7 @@ app.get('/api/users', (_req, res) => {
       ...user,
       status: computeUserStatus(user),
       link: buildUserLink(user),
-      subscriptionUrl: `${SUB_BASE_URL}/api/sub/${user.subToken}`,
+      subscriptionUrl: buildSubscriptionUrl(user.subToken ?? ''),
     }
   })
   writeDb({ users: db.users.map((u) => normalizeUser(u)) })
@@ -442,7 +449,7 @@ app.post('/api/users', (req, res) => {
   db.users.push(user)
   writeDb(db)
   const sync = syncXrayClients(db.users)
-  res.status(201).json({ user: { ...normalizeUser(user), subscriptionUrl: `${SUB_BASE_URL}/api/sub/${user.subToken}` }, sync })
+  res.status(201).json({ user: { ...normalizeUser(user), subscriptionUrl: buildSubscriptionUrl(user.subToken ?? '') }, sync })
 })
 
 app.patch('/api/users/:id', (req, res) => {
@@ -471,7 +478,7 @@ app.get('/api/users/:id/subscription', (req, res) => {
   if (!user) return res.status(404).json({ error: 'user not found' })
   const normalized = normalizeUser(user)
   writeDb({ users: db.users.map((u) => (u.id === user.id ? normalized : u)) })
-  res.json({ subscriptionUrl: `${SUB_BASE_URL}/api/sub/${normalized.subToken}` })
+  res.json({ subscriptionUrl: buildSubscriptionUrl(normalized.subToken ?? '') })
 })
 
 function handleSubscription(req: express.Request, res: express.Response) {
@@ -584,7 +591,7 @@ app.post('/api/keys/client', (req, res) => {
   res.status(201).json({
     user: normalized,
     link,
-    subscriptionUrl: `${SUB_BASE_URL}/api/sub/${normalized.subToken}`,
+    subscriptionUrl: buildSubscriptionUrl(normalized.subToken ?? ''),
     sync,
   })
 })

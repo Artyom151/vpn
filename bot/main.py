@@ -4,6 +4,7 @@ import threading
 import time
 from datetime import datetime, timezone
 from typing import Any
+from urllib.parse import urlparse
 
 import requests
 import telebot
@@ -22,6 +23,7 @@ PAYMENT_TEXT = os.getenv(
 ).strip()
 SUPPORT_TEXT = os.getenv("SUPPORT_TEXT", "@pearvpn_support").strip()
 BOT_NAME = os.getenv("BOT_NAME", "Pear VPN").strip()
+PUBLIC_SUB_BASE = os.getenv("PUBLIC_SUB_BASE", "https://pearvpn.ru").strip().rstrip("/")
 
 if not TOKEN:
     raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
@@ -100,6 +102,24 @@ def api_post(path: str, payload: Any | None = None) -> Any:
     response = requests.post(f"{API_BASE}{path}", json=payload or {}, timeout=20)
     response.raise_for_status()
     return response.json()
+
+
+def normalize_subscription_url(url: str) -> str:
+    value = (url or "").strip()
+    if not value:
+        return value
+    try:
+        parsed = urlparse(value)
+        token = parsed.path.rstrip("/").split("/")[-1]
+        if token:
+            return f"{PUBLIC_SUB_BASE}/sub/{token}"
+    except Exception:
+        pass
+    if "/sub/" in value:
+        token = value.rstrip("/").split("/sub/")[-1].split("/")[0]
+        if token:
+            return f"{PUBLIC_SUB_BASE}/sub/{token}"
+    return value
 
 
 def save_customer(message: types.Message) -> None:
@@ -392,7 +412,7 @@ def ensure_user_link(order_id: int, days: int, tg_user_id: int) -> tuple[str, st
         raise RuntimeError(f"xray sync failed: {sync.get('message', 'unknown error')}")
     link_payload = api_get(f"/api/users/{backend_user.get('id')}/link")
     link = link_payload.get("link", "")
-    subscription_url = payload.get("subscriptionUrl", "")
+    subscription_url = normalize_subscription_url(payload.get("subscriptionUrl", ""))
     if not link:
         raise RuntimeError("failed to generate vless link")
     if not backend_user.get("id"):
@@ -676,7 +696,7 @@ def panel_subscription_watcher() -> None:
                 if is_notified(backend_user_id):
                     continue
 
-                sub_url = user.get("subscriptionUrl", "")
+                sub_url = normalize_subscription_url(user.get("subscriptionUrl", ""))
                 link = user.get("link", "")
                 expires_at = user.get("expiresAt", "")
                 traffic = user.get("trafficLimitGb")

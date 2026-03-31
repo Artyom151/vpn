@@ -64,6 +64,30 @@ const text = {
     extend: '+30 дней',
     delete: 'Удалить',
     getLink: 'vless://',
+    uptime: 'Аптайм',
+    source: 'Источник public key',
+    privateKey: 'Приватный ключ',
+    publicKey: 'Публичный ключ',
+    activeUntil: 'Активен до',
+    noUsername: 'нет_username',
+    vpnLogin: 'Логин VPN',
+    tgId: 'Telegram ID',
+    tgUser: '@username',
+    tgName: 'Имя в Telegram',
+    days: 'Дней',
+    hours: 'Часов',
+    minutes: 'Минут',
+    seconds: 'Секунд',
+    trafficGb: 'Трафик (GB)',
+    devices: 'Устройств',
+    usersHint: 'Подсказка по числам: Telegram ID — числовой ID пользователя в Telegram; Дней/Часов/Минут/Секунд — срок действия доступа; Трафик (GB) — лимит трафика в гигабайтах; Устройств — максимум одновременных устройств.',
+    tgCol: 'Telegram',
+    traffic: 'Трафик',
+    devicesCol: 'Устройства',
+    userNotConfigured: 'Ссылка появится после настройки ключа',
+    statusActive: 'активен',
+    statusPaused: 'пауза',
+    statusExpired: 'истёк',
   },
   en: {
     tabs: { dashboard: 'Dashboard', users: 'Users', keys: 'Keys', logs: 'Logs' },
@@ -92,6 +116,30 @@ const text = {
     extend: '+30 days',
     delete: 'Delete',
     getLink: 'vless://',
+    uptime: 'Uptime',
+    source: 'Public key source',
+    privateKey: 'Private key',
+    publicKey: 'Public key',
+    activeUntil: 'Active until',
+    noUsername: 'no_username',
+    vpnLogin: 'VPN login',
+    tgId: 'Telegram ID',
+    tgUser: '@username',
+    tgName: 'Telegram name',
+    days: 'Days',
+    hours: 'Hours',
+    minutes: 'Minutes',
+    seconds: 'Seconds',
+    trafficGb: 'Traffic (GB)',
+    devices: 'Devices',
+    usersHint: 'Field hints: Telegram ID is numeric Telegram user id; Days/Hours/Minutes/Seconds define access duration; Traffic (GB) is traffic quota; Devices is max simultaneous devices.',
+    tgCol: 'Telegram',
+    traffic: 'Traffic',
+    devicesCol: 'Devices',
+    userNotConfigured: 'Link will appear after key setup',
+    statusActive: 'active',
+    statusPaused: 'paused',
+    statusExpired: 'expired',
   },
 } as const
 
@@ -139,6 +187,12 @@ function App() {
 
   function dateOut(value: string) {
     return new Date(value).toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-US')
+  }
+
+  function statusOut(status: UserStatus) {
+    if (status === 'active') return t.statusActive
+    if (status === 'paused') return t.statusPaused
+    return t.statusExpired
   }
 
   async function createUser(e: FormEvent) {
@@ -201,58 +255,75 @@ function App() {
   return (
     <main className="shell">
       <div className="grid-fade" />
-      <header className="topbar">
-        <div className="brand"><h1>{dashboard.brand.name}</h1><p>{dashboard.brand.subtitle}</p></div>
-        <nav className="tabs">
+      <header className="topbar topbar-copy">
+        <div className="brand brand-copy">
+          <span className="brand-mark">|||</span>
+          <h1>{dashboard.brand.name}</h1>
+        </div>
+        <nav className="top-links">
           <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}>{t.tabs.dashboard}</button>
           <button className={tab === 'users' ? 'active' : ''} onClick={() => setTab('users')}>{t.tabs.users}</button>
           <button className={tab === 'keys' ? 'active' : ''} onClick={() => setTab('keys')}>{t.tabs.keys}</button>
           <button className={tab === 'logs' ? 'active' : ''} onClick={() => setTab('logs')}>{t.tabs.logs}</button>
-          <button onClick={() => setLang((v) => (v === 'ru' ? 'en' : 'ru'))}>{lang === 'ru' ? 'EN' : 'RU'}</button>
         </nav>
+        <button className="try-btn" onClick={() => setLang((v) => (v === 'ru' ? 'en' : 'ru'))}>{lang === 'ru' ? 'EN' : 'RU'}</button>
       </header>
 
       {tab === 'dashboard' && (
-        <section className="cards">
-          <article className="card hero">
-            <h2>{dashboard.vpn.address}:{dashboard.vpn.port}</h2>
-            <p>{dashboard.vpn.label} | SNI: {dashboard.vpn.sni}</p>
-            <div className="stats">
+        <section className="dashboard-copy">
+          <article className="hero-copy">
+            <h2>
+              Pear<span>VPN</span>
+            </h2>
+            <h3>Proxy and user management solution</h3>
+            <p>Built on top of Xray Core. Fast user lifecycle, keys and subscriptions in one panel.</p>
+            <div className="hero-actions hero-copy-actions">
+              <button onClick={syncUsers}>{t.sync}</button>
+              <button onClick={generateCommonLink}>{t.genCommonLink}</button>
+            </div>
+            <div className="stats stats-copy">
               <div><span>{t.activeUsers}</span><strong>{dashboard.vpn.activeUsers}</strong></div>
               <div><span>{t.cpu}</span><strong>{dashboard.system.cpuLoad}</strong></div>
               <div><span>{t.ram}</span><strong>{dashboard.system.memoryUsedGb}/{dashboard.system.memoryTotalGb} GB</strong></div>
             </div>
-          </article>
-          <article className="card">
-            <h3>{t.quick}</h3>
-            <button onClick={syncUsers}>{t.sync}</button>
-            <button onClick={generateCommonLink}>{t.genCommonLink}</button>
             {commonLink && <code>{commonLink}</code>}
           </article>
-          <article className="card"><h3>System</h3><p>{dashboard.system.hostname}</p><p>{dashboard.system.platform}</p><p>Uptime: {dashboard.system.uptimeHours}h</p></article>
-          <article className="card"><h3>Deploy</h3><p>{dashboard.deployment.packageManager}</p><p>{dashboard.deployment.nodeVersion}</p><p>{dashboard.deployment.xrayConfigPath}</p><p>{dashboard.deployment.dbPath}</p></article>
+
+          <article className="preview-copy">
+            <div className="preview-top">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="preview-grid">
+              <div className="mini-card">Host: {dashboard.system.hostname}</div>
+              <div className="mini-card">OS: {dashboard.system.platform}</div>
+              <div className="mini-card">{t.uptime}: {dashboard.system.uptimeHours}h</div>
+              <div className="mini-card">Node: {dashboard.deployment.nodeVersion}</div>
+            </div>
+          </article>
         </section>
       )}
 
       {tab === 'keys' && (
-        <section className="cards single">
-          <article className="card">
+        <section className="cards single keys-section">
+          <article className="card keys-card">
             <h3>Reality / VLESS</h3>
-            <p>Public key source: {dashboard.vpn.publicKeySource ?? 'unknown'}</p>
+            <p>{t.source}: {dashboard.vpn.publicKeySource ?? 'unknown'}</p>
             <input value={publicKeyInput} onChange={(e) => setPublicKeyInput(e.target.value)} placeholder="public key" />
             <div className="actions-row">
               <button onClick={savePublicKey}>{t.savePk}</button>
               <button onClick={generateRealityKeys}>{t.genReality}</button>
               <button onClick={generateCommonLink}>{t.genCommonLink}</button>
             </div>
-            {realityKeys && (<><p>Private:</p><code>{realityKeys.privateKey}</code><p>Public:</p><code>{realityKeys.publicKey}</code></>)}
+            {realityKeys && (<><p>{t.privateKey}:</p><code>{realityKeys.privateKey}</code><p>{t.publicKey}:</p><code>{realityKeys.publicKey}</code></>)}
             {commonLink && <><p>{t.link}:</p><code>{commonLink}</code></>}
           </article>
         </section>
       )}
 
       {tab === 'users' && (
-        <section className="card">
+        <section className="card users-section">
           <h3>{t.usersTitle}</h3>
           <div className="subs-grid">
             {users.map((u) => {
@@ -260,53 +331,53 @@ function App() {
               const limit = u.trafficLimitGb ?? 0
               const ratio = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0
               return (
-                <article key={`sub-${u.id}`} className="sub-card">
+                <article key={`sub-${u.id}`} className="sub-card user-sub-card">
                   <div className="sub-head">
                     <strong>{u.tgFullName || u.username}</strong>
-                    <span>{u.status}</span>
+                    <span className={`status-pill status-${u.status}`}>{statusOut(u.status)}</span>
                   </div>
                   <p className="sub-meta">
-                    @{(u.tgUsername || '').replace('@', '') || 'no_username'} • Активен до {dateOut(u.expiresAt)}
+                    @{(u.tgUsername || '').replace('@', '') || t.noUsername} • {t.activeUntil} {dateOut(u.expiresAt)}
                   </p>
                   <div className="traffic-line">
                     <div className="traffic-fill" style={{ width: `${ratio}%` }} />
                   </div>
                   <p className="sub-meta">
-                    {used}/{limit || '∞'} GB • устройств: {u.deviceLimit ?? 1}
+                    {used}/{limit || '∞'} GB • {t.devices}: {u.deviceLimit ?? 1}
                   </p>
-                  <code>{u.link || 'Ссылка появится после настройки ключа'}</code>
+                  <code>{u.link || t.userNotConfigured}</code>
                   {u.subscriptionUrl && <code>{u.subscriptionUrl}</code>}
                 </article>
               )
             })}
           </div>
-          <form className="create" onSubmit={createUser}>
-            <input value={newUserName} onChange={(e) => setNewUserName(e.target.value)} placeholder="Логин VPN" />
-            <input value={newUserTgId} onChange={(e) => setNewUserTgId(e.target.value)} placeholder="Telegram ID" />
-            <input value={newUserTgName} onChange={(e) => setNewUserTgName(e.target.value)} placeholder="@username" />
-            <input value={newUserTgFullName} onChange={(e) => setNewUserTgFullName(e.target.value)} placeholder="Имя в Telegram" />
-            <input type="number" value={newUserDays} onChange={(e) => setNewUserDays(Number(e.target.value))} min={0} placeholder="Дней" />
-            <input type="number" value={newUserHours} onChange={(e) => setNewUserHours(Number(e.target.value))} min={0} placeholder="Часов" />
-            <input type="number" value={newUserMinutes} onChange={(e) => setNewUserMinutes(Number(e.target.value))} min={0} placeholder="Минут" />
-            <input type="number" value={newUserSeconds} onChange={(e) => setNewUserSeconds(Number(e.target.value))} min={0} placeholder="Секунд" />
-            <input type="number" value={newUserTraffic} onChange={(e) => setNewUserTraffic(Number(e.target.value))} min={1} placeholder="Трафик (GB)" />
-            <input type="number" value={newUserDevices} onChange={(e) => setNewUserDevices(Number(e.target.value))} min={1} placeholder="Устройств" />
+          <form className="create users-create-form" onSubmit={createUser}>
+            <input value={newUserName} onChange={(e) => setNewUserName(e.target.value)} placeholder={t.vpnLogin} />
+            <input value={newUserTgId} onChange={(e) => setNewUserTgId(e.target.value)} placeholder={t.tgId} />
+            <input value={newUserTgName} onChange={(e) => setNewUserTgName(e.target.value)} placeholder={t.tgUser} />
+            <input value={newUserTgFullName} onChange={(e) => setNewUserTgFullName(e.target.value)} placeholder={t.tgName} />
+            <input type="number" value={newUserDays} onChange={(e) => setNewUserDays(Number(e.target.value))} min={0} placeholder={t.days} />
+            <input type="number" value={newUserHours} onChange={(e) => setNewUserHours(Number(e.target.value))} min={0} placeholder={t.hours} />
+            <input type="number" value={newUserMinutes} onChange={(e) => setNewUserMinutes(Number(e.target.value))} min={0} placeholder={t.minutes} />
+            <input type="number" value={newUserSeconds} onChange={(e) => setNewUserSeconds(Number(e.target.value))} min={0} placeholder={t.seconds} />
+            <input type="number" value={newUserTraffic} onChange={(e) => setNewUserTraffic(Number(e.target.value))} min={1} placeholder={t.trafficGb} />
+            <input type="number" value={newUserDevices} onChange={(e) => setNewUserDevices(Number(e.target.value))} min={1} placeholder={t.devices} />
             <input value={newUserNote} onChange={(e) => setNewUserNote(e.target.value)} placeholder={t.note} />
             <button type="submit">{t.create}</button>
           </form>
-          <p>
-            Подсказка по числам: <b>Telegram ID</b> — числовой ID пользователя в Telegram; <b>Дней/Часов/Минут/Секунд</b> — срок действия доступа; <b>Трафик (GB)</b> — лимит трафика в гигабайтах; <b>Устройств</b> — максимум одновременных устройств.
+          <p className="users-hint">
+            {t.usersHint}
           </p>
           <div className="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Telegram</th>
+                  <th>{t.tgCol}</th>
                   <th>{t.username}</th>
                   <th>{t.status}</th>
                   <th>{t.expires}</th>
-                  <th>Трафик</th>
-                  <th>Устройства</th>
+                  <th>{t.traffic}</th>
+                  <th>{t.devicesCol}</th>
                   <th>{t.uuid}</th>
                   <th>{t.note}</th>
                   <th>{t.actions}</th>
@@ -322,7 +393,7 @@ function App() {
                       <div className="mono">{u.tgUserId ?? '-'}</div>
                     </td>
                     <td>{u.username}</td>
-                    <td>{u.status}</td>
+                    <td>{statusOut(u.status)}</td>
                     <td>{dateOut(u.expiresAt)}</td>
                     <td>{u.usedTrafficGb ?? 0}/{u.trafficLimitGb ?? '∞'} GB</td>
                     <td>{u.deviceLimit ?? 1}</td>
@@ -346,8 +417,14 @@ function App() {
       )}
 
       {tab === 'logs' && (
-        <section className="cards">
-          {dashboard.logs.map((l) => (<article className="card" key={l.name}><h3>{l.name}</h3><p>{l.path}</p><pre>{l.preview.join('\n')}</pre></article>))}
+        <section className="cards logs-section">
+          {dashboard.logs.map((l) => (
+            <article className="card log-card" key={l.name}>
+              <h3>{l.name}</h3>
+              <p>{l.path}</p>
+              <pre>{l.preview.join('\n')}</pre>
+            </article>
+          ))}
         </section>
       )}
     </main>

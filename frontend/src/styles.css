@@ -1,168 +1,728 @@
 :root {
-  --bg0: #0b1322;
-  --bg1: #0b1322;
-  --text: #e7edf7;
-  --muted: #9aa8bd;
-  --line: #64748b;
-  --line-soft: #94a3b8;
-  --card: rgba(15, 23, 42, 0.72);
-  --radius: 16px;
+  --bg-0: #020617;
+  --bg-1: #081126;
+  --bg-2: #0d1830;
+  --bg-3: #0f1b34;
+  --text-0: #f3f7ff;
+  --text-1: #d8e2f2;
+  --text-2: #9fb0c9;
+  --line-0: #64748b;
+  --line-1: #64748b;
+  --line-soft: rgba(100, 116, 139, 0.36);
+  --ok: #64748b;
+  --warn: #64748b;
+  --danger: #64748b;
+  --panel: linear-gradient(160deg, rgba(13, 24, 48, 0.86), rgba(8, 17, 38, 0.88));
+  --panel-soft: linear-gradient(160deg, rgba(15, 27, 52, 0.7), rgba(5, 10, 24, 0.7));
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --shadow-0: 0 8px 30px rgba(0, 0, 0, 0.24);
+  --shadow-1: 0 16px 60px rgba(0, 0, 0, 0.3);
+  --blur-0: blur(10px);
+  --blur-1: blur(18px);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --font-size-0: 12px;
+  --font-size-1: 13px;
+  --font-size-2: 14px;
+  --font-size-3: 16px;
+  --font-size-4: 18px;
+  --font-size-5: 20px;
+  --font-size-6: 24px;
+  --font-size-7: 30px;
+  --font-weight-0: 300;
+  --font-weight-1: 400;
+  --font-weight-2: 500;
+  --font-weight-3: 600;
+  --font-weight-4: 700;
+  --timing-fast: 160ms;
+  --timing-mid: 260ms;
+  --timing-slow: 420ms;
+  --easing: cubic-bezier(0.22, 1, 0.36, 1);
   font-family: "Unbounded", sans-serif;
 }
 
-* { box-sizing: border-box; }
-html, body, #root {
-  margin: 0;
-  min-height: 100%;
-  color: var(--text);
-  background-color: var(--bg0);
-  background-image:
-    radial-gradient(900px 420px at 15% 0%, rgba(100, 116, 139, 0.16), transparent 70%),
-    radial-gradient(900px 420px at 85% 100%, rgba(100, 116, 139, 0.16), transparent 70%);
-  background-attachment: fixed;
-}
-body { overflow-x: hidden; }
-body {
-  scrollbar-width: thin;
-  scrollbar-color: #94a3b8 rgba(11, 19, 34, 0.75);
-}
-body::-webkit-scrollbar {
-  width: 11px;
-}
-body::-webkit-scrollbar-track {
-  background: rgba(11, 19, 34, 0.75);
-}
-body::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #64748b, #94a3b8);
-  border-radius: 999px;
-  border: 2px solid rgba(11, 19, 34, 0.75);
-}
-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #94a3b8, #cbd5e1);
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.shell { width: min(1320px, calc(100vw - 28px)); margin: 0 auto; padding: 18px 0 36px; position: relative; }
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  color: var(--text-0);
+  font-family: "Unbounded", sans-serif;
+  background-color: var(--bg-0);
+  background-image:
+    radial-gradient(1400px 760px at 8% -12%, rgba(100, 116, 139, 0.32), transparent 72%),
+    radial-gradient(1200px 660px at 92% 112%, rgba(100, 116, 139, 0.2), transparent 68%),
+    radial-gradient(780px 480px at 50% 38%, rgba(100, 116, 139, 0.09), transparent 74%),
+    linear-gradient(180deg, #0b1730 0%, #071126 42%, #030917 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  text-rendering: geometricPrecision;
+}
+
+::selection {
+  background: rgba(100, 116, 139, 0.24);
+  color: var(--text-0);
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-0) rgba(2, 6, 23, 0.8);
+}
+
+body::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+body::-webkit-scrollbar-track {
+  background: rgba(2, 6, 23, 0.8);
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--line-0), var(--line-0));
+  border-radius: 999px;
+  border: 2px solid rgba(2, 6, 23, 0.84);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--line-0), var(--line-0));
+}
+
+.shell {
+  width: min(1520px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 18px 0 56px;
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
+}
+
 .grid-fade {
-  position: fixed; inset: 0; pointer-events: none;
-  background-image: linear-gradient(rgba(100, 116, 139, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 116, 139, 0.2) 1px, transparent 1px);
-  background-size: 26px 26px;
-  mask-image: radial-gradient(circle at center, black 48%, transparent 88%);
-  -webkit-mask-image: radial-gradient(circle at center, black 48%, transparent 88%);
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(100, 116, 139, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 139, 0.2) 1px, transparent 1px),
+    radial-gradient(1200px 720px at 50% 18%, rgba(100, 116, 139, 0.18), transparent 70%);
+  background-size: 30px 30px, 30px 30px, auto;
+  mask-image: radial-gradient(circle at center, black 48%, transparent 90%);
+  -webkit-mask-image: radial-gradient(circle at center, black 48%, transparent 90%);
+}
+
+.grid-fade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 420px at 20% 20%, rgba(100, 116, 139, 0.12), transparent 72%),
+    radial-gradient(900px 420px at 80% 80%, rgba(100, 116, 139, 0.08), transparent 76%);
+}
+
+.grid-fade::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.35), rgba(2, 6, 23, 0.58));
+  mix-blend-mode: multiply;
 }
 
 .topbar {
-  position: sticky; top: 10px; z-index: 4;
-  display: flex; gap: 18px; justify-content: space-between; align-items: center;
-  border: 1px solid var(--line); border-radius: var(--radius);
-  background: rgba(10, 15, 24, 0.84); backdrop-filter: blur(10px);
-  padding: 14px;
+  position: sticky;
+  top: 12px;
+  z-index: 30;
+  display: flex;
+  gap: var(--space-5);
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(100, 116, 139, 0.56);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(130deg, rgba(15, 27, 52, 0.8), rgba(5, 12, 24, 0.92));
+  backdrop-filter: var(--blur-0);
+  -webkit-backdrop-filter: var(--blur-0);
+  box-shadow: var(--shadow-0);
+  padding: 14px 16px;
 }
-.brand h1 { margin: 0; font-size: 1.35rem; }
-.brand p { margin: 6px 0 0; color: var(--muted); font-size: 0.78rem; }
 
-.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
-button, input { font-family: "Unbounded", sans-serif; }
-button {
-  border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px;
-  background: linear-gradient(160deg, rgba(100, 116, 139, 0.18), rgba(2, 6, 23, 0.6));
-  color: var(--text); cursor: pointer;
+.topbar-copy {
+  margin-bottom: 10px;
+  border-radius: 18px;
+  background: rgba(10, 20, 35, 0.75);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
-button:hover { border-color: var(--line-soft); }
-.tabs button.active { border-color: var(--line-soft); background: rgba(148, 163, 184, 0.2); }
 
-.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
-.single { grid-template-columns: 1fr; }
-.card {
-  border: 1px solid var(--line); border-radius: var(--radius); background: var(--card);
-  padding: 14px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+.topbar-tabs {
+  position: static;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding-top: 4px;
 }
-.hero { grid-column: span 2; }
-.hero h2 { margin: 0 0 8px; font-size: clamp(1.3rem, 3.2vw, 2rem); }
-.hero p { margin: 0; color: var(--muted); }
-.stats { margin-top: 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.stats div { border: 1px solid var(--line-soft); border-radius: 10px; padding: 8px; background: rgba(2, 6, 23, 0.42); }
-.stats span { color: var(--muted); font-size: 0.66rem; display: block; margin-bottom: 5px; text-transform: uppercase; }
 
-h3 { margin: 0 0 10px; }
-p { color: var(--muted); margin: 7px 0; word-break: break-word; }
-input {
-  width: 100%; border: 1px solid var(--line-soft); border-radius: 10px;
-  background: rgba(2, 6, 23, 0.64); color: var(--text); padding: 10px;
-}
-.actions-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
-.subs-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.sub-card {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(2, 6, 23, 0.65);
-  padding: 10px;
-}
-.sub-head {
+.brand-copy {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.brand-copy h1 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.brand-mark {
+  color: #3cc8e6;
+  letter-spacing: -3px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.top-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 0 2px;
+  scroll-behavior: smooth;
+}
+
+.top-links::-webkit-scrollbar {
+  display: none;
+}
+
+.top-links button,
+.try-btn {
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(8, 18, 33, 0.7);
+  white-space: nowrap;
+  flex: 0 0 auto;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.try-btn {
+  flex: 0 0 auto;
+}
+
+.top-links .active {
+  border-color: rgba(100, 116, 139, 0.9);
+  background: rgba(100, 116, 139, 0.26);
+}
+
+.try-btn {
+  border-color: rgba(100, 116, 139, 0.85);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.9rem);
+  font-weight: var(--font-weight-4);
+  letter-spacing: 0.3px;
+}
+
+.brand p {
+  margin: 6px 0 0;
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: "Unbounded", sans-serif;
+}
+
+button {
+  border: 1px solid rgba(100, 116, 139, 0.5);
+  border-radius: var(--radius-sm);
+  padding: 9px 13px;
+  background: linear-gradient(160deg, rgba(100, 116, 139, 0.22), rgba(3, 8, 22, 0.64));
+  color: var(--text-0);
+  cursor: pointer;
+  transition:
+    transform var(--timing-fast) var(--easing),
+    border-color var(--timing-fast) var(--easing),
+    box-shadow var(--timing-fast) var(--easing),
+    background var(--timing-mid) var(--easing);
+}
+
+button:hover {
+  border-color: rgba(100, 116, 139, 0.8);
+  box-shadow: 0 0 0 1px rgba(100, 116, 139, 0.2), 0 8px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(100, 116, 139, 0.72);
+  outline-offset: 2px;
+}
+
+.tabs button.active {
+  border-color: rgba(100, 116, 139, 0.75);
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.24), rgba(100, 116, 139, 0.22));
+}
+
+.cards {
+  margin-top: var(--space-3);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.single {
+  grid-template-columns: 1fr;
+}
+
+.card {
+  border: 1px solid rgba(100, 116, 139, 0.6);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  backdrop-filter: var(--blur-1);
+  -webkit-backdrop-filter: var(--blur-1);
+  box-shadow: var(--shadow-0);
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 0%, rgba(100, 116, 139, 0.08) 46%, transparent 100%);
+  opacity: 0.42;
+}
+
+.hero {
+  grid-column: span 2;
+}
+
+.hero-main {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  background:
+    radial-gradient(900px 300px at 15% 0%, rgba(100, 116, 139, 0.22), transparent 70%),
+    radial-gradient(800px 260px at 95% 100%, rgba(100, 116, 139, 0.16), transparent 72%),
+    linear-gradient(150deg, rgba(9, 19, 38, 0.94), rgba(4, 10, 22, 0.98));
+}
+
+.hero-kicker {
+  width: fit-content;
+  border: 1px solid rgba(100, 116, 139, 0.64);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--text-1);
+  background: rgba(2, 6, 23, 0.45);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
-.sub-meta {
-  margin: 6px 0;
-  font-size: 0.72rem;
+
+.dashboard-cards .glass-card {
+  background: linear-gradient(145deg, rgba(12, 24, 46, 0.84), rgba(4, 10, 22, 0.88));
 }
+
+.dashboard-cards .glass-card h3 {
+  margin-bottom: 12px;
+}
+
+.dashboard-copy {
+  margin-top: 24px;
+}
+
+.hero-copy {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 36px 20px 24px;
+}
+
+.hero-copy h2 {
+  margin: 0;
+  font-size: clamp(44px, 7vw, 78px);
+  line-height: 1.02;
+  color: #3cc8e6;
+}
+
+.hero-copy h2 span {
+  color: var(--text-0);
+}
+
+.hero-copy h3 {
+  margin: 18px 0 14px;
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: 1.12;
+}
+
+.hero-copy p {
+  margin: 0 auto;
+  max-width: 880px;
+  font-size: clamp(14px, 1.6vw, 24px);
+}
+
+.hero-copy-actions {
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.stats-copy {
+  max-width: 900px;
+  margin: 18px auto 0;
+}
+
+.preview-copy {
+  max-width: 1040px;
+  margin: 26px auto 0;
+  border: 1px solid rgba(100, 116, 139, 0.5);
+  border-radius: 16px;
+  background: rgba(6, 14, 28, 0.9);
+  padding: 14px;
+}
+
+.preview-top {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.preview-top span {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.85);
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mini-card {
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  color: var(--text-1);
+  background: rgba(15, 28, 48, 0.72);
+}
+
+.keys-section .keys-card {
+  max-width: 980px;
+}
+
+.keys-card code {
+  margin-top: 10px;
+}
+
+.users-section {
+  padding: 16px;
+}
+
+.users-create-form input,
+.users-create-form button {
+  min-height: 42px;
+}
+
+.users-hint {
+  margin: 10px 0 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.user-sub-card {
+  min-height: 168px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(100, 116, 139, 0.7);
+  background: rgba(8, 17, 38, 0.66);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.status-active {
+  border-color: rgba(100, 116, 139, 0.9);
+  color: var(--text-1);
+}
+
+.status-paused {
+  border-color: rgba(100, 116, 139, 0.72);
+  color: var(--text-2);
+}
+
+.status-expired {
+  border-color: rgba(100, 116, 139, 0.5);
+  color: #b6c3d9;
+}
+
+.table-wrap table tbody tr:hover {
+  background: rgba(100, 116, 139, 0.08);
+}
+
+.table-wrap table td {
+  font-size: 12px;
+}
+
+.logs-section {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.log-card {
+  min-height: 300px;
+}
+
+.log-card pre {
+  max-height: 240px;
+}
+
+.hero h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.3rem, 2.8vw, 2.35rem);
+}
+
+.hero p {
+  margin: 0;
+  color: var(--text-2);
+}
+
+.stats {
+  margin-top: var(--space-3);
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats > div {
+  border: 1px solid rgba(100, 116, 139, 0.56);
+  border-radius: var(--radius-sm);
+  background: var(--panel-soft);
+  padding: 10px;
+}
+
+.stats span {
+  font-size: 11px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-2);
+  margin-bottom: 5px;
+}
+
+h3 {
+  margin: 0 0 10px;
+  font-size: clamp(1rem, 1.5vw, 1.26rem);
+}
+
+p {
+  margin: 7px 0;
+  color: var(--text-2);
+  word-break: break-word;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  border-radius: var(--radius-sm);
+  background: rgba(2, 6, 23, 0.72);
+  color: var(--text-0);
+  padding: 10px 11px;
+  min-height: 40px;
+  transition: border-color var(--timing-fast) var(--easing), box-shadow var(--timing-fast) var(--easing);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-2);
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: rgba(100, 116, 139, 0.54);
+}
+
+.actions-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+}
+
+.subs-grid {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: var(--space-3);
+}
+
+.sub-card {
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  border-radius: var(--radius-md);
+  background: linear-gradient(160deg, rgba(14, 24, 44, 0.85), rgba(3, 9, 22, 0.92));
+  padding: 10px;
+  min-height: 130px;
+}
+
+.sub-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sub-meta {
+  margin: 7px 0;
+  font-size: var(--font-size-0);
+}
+
 .traffic-line {
   width: 100%;
-  height: 9px;
+  height: 10px;
   border-radius: 999px;
   background: rgba(100, 116, 139, 0.2);
   overflow: hidden;
+  border: 1px solid rgba(100, 116, 139, 0.4);
 }
+
 .traffic-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #64748b, #94a3b8);
+  background: linear-gradient(90deg, var(--line-0), var(--line-0));
 }
 
-code, pre {
-  display: block; margin-top: 8px; border: 1px solid var(--line-soft); border-radius: 10px;
-  background: rgba(2, 6, 23, 0.78); color: #dce6f7; padding: 9px; font-size: 0.72rem;
-  white-space: pre-wrap; overflow: auto;
+code,
+pre {
+  display: block;
+  margin-top: 8px;
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  border-radius: var(--radius-sm);
+  background: rgba(2, 6, 23, 0.82);
+  color: var(--text-1);
+  font-size: 12px;
+  padding: 10px;
+  white-space: pre-wrap;
+  overflow: auto;
+  max-width: 100%;
 }
 
 .create {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
+
 .table-wrap {
   overflow-y: auto;
   overflow-x: hidden;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  max-height: 62vh;
+  border: 1px solid rgba(100, 116, 139, 0.56);
+  border-radius: var(--radius-md);
+  backdrop-filter: var(--blur-0);
+  -webkit-backdrop-filter: var(--blur-0);
+  max-height: 70vh;
   scrollbar-width: thin;
-  scrollbar-color: #94a3b8 rgba(11, 19, 34, 0.7);
+  scrollbar-color: #64748b rgba(2, 6, 23, 0.7);
 }
+
 .table-wrap::-webkit-scrollbar {
   width: 10px;
 }
+
 .table-wrap::-webkit-scrollbar-track {
-  background: rgba(11, 19, 34, 0.7);
+  background: rgba(2, 6, 23, 0.72);
 }
+
 .table-wrap::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #64748b, #94a3b8);
+  background: linear-gradient(180deg, var(--line-0), var(--line-0));
   border-radius: 999px;
-  border: 2px solid rgba(11, 19, 34, 0.7);
+  border: 2px solid rgba(2, 6, 23, 0.72);
 }
-table { width: 100%; border-collapse: collapse; min-width: 0; table-layout: fixed; font-size: 0.76rem; }
-th, td {
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 0;
+  font-size: var(--font-size-1);
+}
+
+th,
+td {
   text-align: left;
   vertical-align: top;
   padding: 10px;
@@ -170,19 +730,3241 @@ th, td {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-thead th { color: #d4e0f5; background: rgba(100, 116, 139, 0.16); position: sticky; top: 0; }
-.act { min-width: 0; }
-.act button { margin: 0 6px 6px 0; }
-.mono { font-family: "Unbounded", sans-serif; word-break: break-all; font-size: 0.66rem; max-width: 100%; }
 
-@media (max-width: 1060px) {
-  .cards { grid-template-columns: 1fr; }
-  .hero { grid-column: auto; }
-  .stats { grid-template-columns: 1fr; }
-  .subs-grid { grid-template-columns: 1fr; }
+thead th {
+  color: var(--text-1);
+  background: rgba(100, 116, 139, 0.24);
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
+
+.act {
+  min-width: 0;
+}
+
+.act button {
+  margin: 0 6px 6px 0;
+}
+
+.mono {
+  font-family: "Unbounded", sans-serif;
+  font-size: 11px;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-border {
+  0% {
+    border-color: rgba(100, 116, 139, 0.25);
+  }
+  50% {
+    border-color: rgba(100, 116, 139, 0.72);
+  }
+  100% {
+    border-color: rgba(100, 116, 139, 0.25);
+  }
+}
+
+.card,
+.topbar,
+.sub-card {
+  animation: float-in var(--timing-slow) var(--easing);
+}
+
+.tabs button.active {
+  animation: pulse-border 2.4s ease-in-out infinite;
+}
+
+@media (max-width: 1420px) {
+  .shell {
+    width: min(1320px, calc(100vw - 22px));
+  }
+  .subs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1080px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  .hero {
+    grid-column: auto;
+  }
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  .create {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .preview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 860px) {
-  .topbar { position: static; flex-direction: column; align-items: flex-start; }
-  .create { grid-template-columns: 1fr; }
-  .shell { width: calc(100vw - 16px); }
+  .topbar {
+    position: static;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .tabs {
+    width: 100%;
+  }
+  .topbar-copy {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-copy { order: 1; }
+  .try-btn { order: 2; margin-left: auto; }
+  .top-links {
+    order: 3;
+    flex: 1 1 100%;
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+  .top-links button {
+    white-space: nowrap;
+  }
+  .try-btn { display: inline-flex; }
+  .tabs button {
+    flex: 1 1 auto;
+  }
+  .create {
+    grid-template-columns: 1fr;
+  }
+  .subs-grid {
+    grid-template-columns: 1fr;
+  }
+  .preview-grid {
+    grid-template-columns: 1fr;
+  }
+  .shell {
+    width: calc(100vw - 14px);
+    padding-top: 12px;
+  }
 }
+
+/* --- Massive utility section for high-customization UI system --- */
+
+.u-hidden { display: none !important; }
+.u-block { display: block !important; }
+.u-flex { display: flex !important; }
+.u-grid { display: grid !important; }
+.u-inline { display: inline !important; }
+.u-inline-block { display: inline-block !important; }
+.u-relative { position: relative !important; }
+.u-absolute { position: absolute !important; }
+.u-fixed { position: fixed !important; }
+.u-sticky { position: sticky !important; }
+.u-text-left { text-align: left !important; }
+.u-text-center { text-align: center !important; }
+.u-text-right { text-align: right !important; }
+.u-uppercase { text-transform: uppercase !important; }
+.u-lowercase { text-transform: lowercase !important; }
+.u-capitalize { text-transform: capitalize !important; }
+.u-fw-300 { font-weight: 300 !important; }
+.u-fw-400 { font-weight: 400 !important; }
+.u-fw-500 { font-weight: 500 !important; }
+.u-fw-600 { font-weight: 600 !important; }
+.u-fw-700 { font-weight: 700 !important; }
+.u-overflow-hidden { overflow: hidden !important; }
+.u-overflow-auto { overflow: auto !important; }
+.u-overflow-x-auto { overflow-x: auto !important; }
+.u-overflow-y-auto { overflow-y: auto !important; }
+.u-items-start { align-items: flex-start !important; }
+.u-items-center { align-items: center !important; }
+.u-items-end { align-items: flex-end !important; }
+.u-justify-start { justify-content: flex-start !important; }
+.u-justify-center { justify-content: center !important; }
+.u-justify-end { justify-content: flex-end !important; }
+.u-justify-between { justify-content: space-between !important; }
+.u-justify-around { justify-content: space-around !important; }
+.u-justify-evenly { justify-content: space-evenly !important; }
+.u-wrap { flex-wrap: wrap !important; }
+.u-nowrap { flex-wrap: nowrap !important; }
+.u-direction-row { flex-direction: row !important; }
+.u-direction-col { flex-direction: column !important; }
+
+.u-gap-0 { gap: 0 !important; }
+.u-gap-1 { gap: 4px !important; }
+.u-gap-2 { gap: 8px !important; }
+.u-gap-3 { gap: 12px !important; }
+.u-gap-4 { gap: 16px !important; }
+.u-gap-5 { gap: 20px !important; }
+.u-gap-6 { gap: 24px !important; }
+.u-gap-7 { gap: 28px !important; }
+.u-gap-8 { gap: 32px !important; }
+.u-gap-9 { gap: 36px !important; }
+.u-gap-10 { gap: 40px !important; }
+.u-gap-11 { gap: 44px !important; }
+.u-gap-12 { gap: 48px !important; }
+.u-gap-13 { gap: 52px !important; }
+.u-gap-14 { gap: 56px !important; }
+.u-gap-15 { gap: 60px !important; }
+.u-gap-16 { gap: 64px !important; }
+.u-gap-17 { gap: 68px !important; }
+.u-gap-18 { gap: 72px !important; }
+.u-gap-19 { gap: 76px !important; }
+.u-gap-20 { gap: 80px !important; }
+
+.u-p-0 { padding: 0 !important; }
+.u-p-1 { padding: 4px !important; }
+.u-p-2 { padding: 8px !important; }
+.u-p-3 { padding: 12px !important; }
+.u-p-4 { padding: 16px !important; }
+.u-p-5 { padding: 20px !important; }
+.u-p-6 { padding: 24px !important; }
+.u-p-7 { padding: 28px !important; }
+.u-p-8 { padding: 32px !important; }
+.u-p-9 { padding: 36px !important; }
+.u-p-10 { padding: 40px !important; }
+.u-px-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.u-px-1 { padding-left: 4px !important; padding-right: 4px !important; }
+.u-px-2 { padding-left: 8px !important; padding-right: 8px !important; }
+.u-px-3 { padding-left: 12px !important; padding-right: 12px !important; }
+.u-px-4 { padding-left: 16px !important; padding-right: 16px !important; }
+.u-px-5 { padding-left: 20px !important; padding-right: 20px !important; }
+.u-px-6 { padding-left: 24px !important; padding-right: 24px !important; }
+.u-px-7 { padding-left: 28px !important; padding-right: 28px !important; }
+.u-px-8 { padding-left: 32px !important; padding-right: 32px !important; }
+.u-py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
+.u-py-1 { padding-top: 4px !important; padding-bottom: 4px !important; }
+.u-py-2 { padding-top: 8px !important; padding-bottom: 8px !important; }
+.u-py-3 { padding-top: 12px !important; padding-bottom: 12px !important; }
+.u-py-4 { padding-top: 16px !important; padding-bottom: 16px !important; }
+.u-py-5 { padding-top: 20px !important; padding-bottom: 20px !important; }
+.u-py-6 { padding-top: 24px !important; padding-bottom: 24px !important; }
+.u-py-7 { padding-top: 28px !important; padding-bottom: 28px !important; }
+.u-py-8 { padding-top: 32px !important; padding-bottom: 32px !important; }
+
+.u-m-0 { margin: 0 !important; }
+.u-m-1 { margin: 4px !important; }
+.u-m-2 { margin: 8px !important; }
+.u-m-3 { margin: 12px !important; }
+.u-m-4 { margin: 16px !important; }
+.u-m-5 { margin: 20px !important; }
+.u-m-6 { margin: 24px !important; }
+.u-m-7 { margin: 28px !important; }
+.u-m-8 { margin: 32px !important; }
+.u-mx-auto { margin-left: auto !important; margin-right: auto !important; }
+.u-mt-0 { margin-top: 0 !important; }
+.u-mt-1 { margin-top: 4px !important; }
+.u-mt-2 { margin-top: 8px !important; }
+.u-mt-3 { margin-top: 12px !important; }
+.u-mt-4 { margin-top: 16px !important; }
+.u-mt-5 { margin-top: 20px !important; }
+.u-mt-6 { margin-top: 24px !important; }
+.u-mt-7 { margin-top: 28px !important; }
+.u-mt-8 { margin-top: 32px !important; }
+.u-mb-0 { margin-bottom: 0 !important; }
+.u-mb-1 { margin-bottom: 4px !important; }
+.u-mb-2 { margin-bottom: 8px !important; }
+.u-mb-3 { margin-bottom: 12px !important; }
+.u-mb-4 { margin-bottom: 16px !important; }
+.u-mb-5 { margin-bottom: 20px !important; }
+.u-mb-6 { margin-bottom: 24px !important; }
+.u-mb-7 { margin-bottom: 28px !important; }
+.u-mb-8 { margin-bottom: 32px !important; }
+
+.u-radius-0 { border-radius: 0 !important; }
+.u-radius-1 { border-radius: 4px !important; }
+.u-radius-2 { border-radius: 8px !important; }
+.u-radius-3 { border-radius: 12px !important; }
+.u-radius-4 { border-radius: 16px !important; }
+.u-radius-5 { border-radius: 20px !important; }
+.u-radius-6 { border-radius: 24px !important; }
+.u-radius-max { border-radius: 999px !important; }
+
+.u-w-100 { width: 100% !important; }
+.u-h-100 { height: 100% !important; }
+.u-minh-100 { min-height: 100% !important; }
+.u-maxw-100 { max-width: 100% !important; }
+.u-z-0 { z-index: 0 !important; }
+.u-z-1 { z-index: 1 !important; }
+.u-z-2 { z-index: 2 !important; }
+.u-z-3 { z-index: 3 !important; }
+.u-z-4 { z-index: 4 !important; }
+.u-z-5 { z-index: 5 !important; }
+.u-z-10 { z-index: 10 !important; }
+.u-z-20 { z-index: 20 !important; }
+.u-z-30 { z-index: 30 !important; }
+.u-z-40 { z-index: 40 !important; }
+.u-z-50 { z-index: 50 !important; }
+
+.u-opacity-0 { opacity: 0 !important; }
+.u-opacity-10 { opacity: 0.1 !important; }
+.u-opacity-20 { opacity: 0.2 !important; }
+.u-opacity-30 { opacity: 0.3 !important; }
+.u-opacity-40 { opacity: 0.4 !important; }
+.u-opacity-50 { opacity: 0.5 !important; }
+.u-opacity-60 { opacity: 0.6 !important; }
+.u-opacity-70 { opacity: 0.7 !important; }
+.u-opacity-80 { opacity: 0.8 !important; }
+.u-opacity-90 { opacity: 0.9 !important; }
+.u-opacity-100 { opacity: 1 !important; }
+
+.u-text-xs { font-size: 11px !important; }
+.u-text-sm { font-size: 12px !important; }
+.u-text-md { font-size: 14px !important; }
+.u-text-lg { font-size: 16px !important; }
+.u-text-xl { font-size: 18px !important; }
+.u-text-2xl { font-size: 22px !important; }
+.u-text-3xl { font-size: 28px !important; }
+
+.u-color-0 { color: var(--text-0) !important; }
+.u-color-1 { color: var(--text-1) !important; }
+.u-color-2 { color: var(--text-2) !important; }
+.u-color-line { color: var(--line-0) !important; }
+.u-color-ok { color: var(--ok) !important; }
+.u-color-warn { color: var(--warn) !important; }
+.u-color-danger { color: var(--danger) !important; }
+
+.u-bg-0 { background: var(--bg-0) !important; }
+.u-bg-1 { background: var(--bg-1) !important; }
+.u-bg-2 { background: var(--bg-2) !important; }
+.u-bg-panel { background: var(--panel) !important; }
+.u-bg-soft { background: var(--panel-soft) !important; }
+
+.u-border-0 { border: 0 !important; }
+.u-border-1 { border: 1px solid var(--line-soft) !important; }
+.u-border-line { border: 1px solid var(--line-0) !important; }
+.u-border-accent { border: 1px solid var(--line-1) !important; }
+
+.u-shadow-0 { box-shadow: var(--shadow-0) !important; }
+.u-shadow-1 { box-shadow: var(--shadow-1) !important; }
+.u-shadow-none { box-shadow: none !important; }
+.u-blur-0 { backdrop-filter: var(--blur-0) !important; -webkit-backdrop-filter: var(--blur-0) !important; }
+.u-blur-1 { backdrop-filter: var(--blur-1) !important; -webkit-backdrop-filter: var(--blur-1) !important; }
+
+.u-transition-fast { transition: all var(--timing-fast) var(--easing) !important; }
+.u-transition-mid { transition: all var(--timing-mid) var(--easing) !important; }
+.u-transition-slow { transition: all var(--timing-slow) var(--easing) !important; }
+
+.u-grid-1 { display: grid !important; grid-template-columns: 1fr !important; }
+.u-grid-2 { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.u-grid-3 { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+.u-grid-4 { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+.u-grid-5 { display: grid !important; grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+.u-grid-6 { display: grid !important; grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+
+/* Utility extension pack to support large scale styling presets */
+.u-slot-001{--slot:1;}
+.u-slot-002{--slot:2;}
+.u-slot-003{--slot:3;}
+.u-slot-004{--slot:4;}
+.u-slot-005{--slot:5;}
+.u-slot-006{--slot:6;}
+.u-slot-007{--slot:7;}
+.u-slot-008{--slot:8;}
+.u-slot-009{--slot:9;}
+.u-slot-010{--slot:10;}
+.u-slot-011{--slot:11;}
+.u-slot-012{--slot:12;}
+.u-slot-013{--slot:13;}
+.u-slot-014{--slot:14;}
+.u-slot-015{--slot:15;}
+.u-slot-016{--slot:16;}
+.u-slot-017{--slot:17;}
+.u-slot-018{--slot:18;}
+.u-slot-019{--slot:19;}
+.u-slot-020{--slot:20;}
+.u-slot-021{--slot:21;}
+.u-slot-022{--slot:22;}
+.u-slot-023{--slot:23;}
+.u-slot-024{--slot:24;}
+.u-slot-025{--slot:25;}
+.u-slot-026{--slot:26;}
+.u-slot-027{--slot:27;}
+.u-slot-028{--slot:28;}
+.u-slot-029{--slot:29;}
+.u-slot-030{--slot:30;}
+.u-slot-031{--slot:31;}
+.u-slot-032{--slot:32;}
+.u-slot-033{--slot:33;}
+.u-slot-034{--slot:34;}
+.u-slot-035{--slot:35;}
+.u-slot-036{--slot:36;}
+.u-slot-037{--slot:37;}
+.u-slot-038{--slot:38;}
+.u-slot-039{--slot:39;}
+.u-slot-040{--slot:40;}
+.u-slot-041{--slot:41;}
+.u-slot-042{--slot:42;}
+.u-slot-043{--slot:43;}
+.u-slot-044{--slot:44;}
+.u-slot-045{--slot:45;}
+.u-slot-046{--slot:46;}
+.u-slot-047{--slot:47;}
+.u-slot-048{--slot:48;}
+.u-slot-049{--slot:49;}
+.u-slot-050{--slot:50;}
+.u-slot-051{--slot:51;}
+.u-slot-052{--slot:52;}
+.u-slot-053{--slot:53;}
+.u-slot-054{--slot:54;}
+.u-slot-055{--slot:55;}
+.u-slot-056{--slot:56;}
+.u-slot-057{--slot:57;}
+.u-slot-058{--slot:58;}
+.u-slot-059{--slot:59;}
+.u-slot-060{--slot:60;}
+.u-slot-061{--slot:61;}
+.u-slot-062{--slot:62;}
+.u-slot-063{--slot:63;}
+.u-slot-064{--slot:64;}
+.u-slot-065{--slot:65;}
+.u-slot-066{--slot:66;}
+.u-slot-067{--slot:67;}
+.u-slot-068{--slot:68;}
+.u-slot-069{--slot:69;}
+.u-slot-070{--slot:70;}
+.u-slot-071{--slot:71;}
+.u-slot-072{--slot:72;}
+.u-slot-073{--slot:73;}
+.u-slot-074{--slot:74;}
+.u-slot-075{--slot:75;}
+.u-slot-076{--slot:76;}
+.u-slot-077{--slot:77;}
+.u-slot-078{--slot:78;}
+.u-slot-079{--slot:79;}
+.u-slot-080{--slot:80;}
+.u-slot-081{--slot:81;}
+.u-slot-082{--slot:82;}
+.u-slot-083{--slot:83;}
+.u-slot-084{--slot:84;}
+.u-slot-085{--slot:85;}
+.u-slot-086{--slot:86;}
+.u-slot-087{--slot:87;}
+.u-slot-088{--slot:88;}
+.u-slot-089{--slot:89;}
+.u-slot-090{--slot:90;}
+.u-slot-091{--slot:91;}
+.u-slot-092{--slot:92;}
+.u-slot-093{--slot:93;}
+.u-slot-094{--slot:94;}
+.u-slot-095{--slot:95;}
+.u-slot-096{--slot:96;}
+.u-slot-097{--slot:97;}
+.u-slot-098{--slot:98;}
+.u-slot-099{--slot:99;}
+.u-slot-100{--slot:100;}
+.u-slot-101{--slot:101;}
+.u-slot-102{--slot:102;}
+.u-slot-103{--slot:103;}
+.u-slot-104{--slot:104;}
+.u-slot-105{--slot:105;}
+.u-slot-106{--slot:106;}
+.u-slot-107{--slot:107;}
+.u-slot-108{--slot:108;}
+.u-slot-109{--slot:109;}
+.u-slot-110{--slot:110;}
+.u-slot-111{--slot:111;}
+.u-slot-112{--slot:112;}
+.u-slot-113{--slot:113;}
+.u-slot-114{--slot:114;}
+.u-slot-115{--slot:115;}
+.u-slot-116{--slot:116;}
+.u-slot-117{--slot:117;}
+.u-slot-118{--slot:118;}
+.u-slot-119{--slot:119;}
+.u-slot-120{--slot:120;}
+.u-slot-121{--slot:121;}
+.u-slot-122{--slot:122;}
+.u-slot-123{--slot:123;}
+.u-slot-124{--slot:124;}
+.u-slot-125{--slot:125;}
+.u-slot-126{--slot:126;}
+.u-slot-127{--slot:127;}
+.u-slot-128{--slot:128;}
+.u-slot-129{--slot:129;}
+.u-slot-130{--slot:130;}
+.u-slot-131{--slot:131;}
+.u-slot-132{--slot:132;}
+.u-slot-133{--slot:133;}
+.u-slot-134{--slot:134;}
+.u-slot-135{--slot:135;}
+.u-slot-136{--slot:136;}
+.u-slot-137{--slot:137;}
+.u-slot-138{--slot:138;}
+.u-slot-139{--slot:139;}
+.u-slot-140{--slot:140;}
+.u-slot-141{--slot:141;}
+.u-slot-142{--slot:142;}
+.u-slot-143{--slot:143;}
+.u-slot-144{--slot:144;}
+.u-slot-145{--slot:145;}
+.u-slot-146{--slot:146;}
+.u-slot-147{--slot:147;}
+.u-slot-148{--slot:148;}
+.u-slot-149{--slot:149;}
+.u-slot-150{--slot:150;}
+.u-slot-151{--slot:151;}
+.u-slot-152{--slot:152;}
+.u-slot-153{--slot:153;}
+.u-slot-154{--slot:154;}
+.u-slot-155{--slot:155;}
+.u-slot-156{--slot:156;}
+.u-slot-157{--slot:157;}
+.u-slot-158{--slot:158;}
+.u-slot-159{--slot:159;}
+.u-slot-160{--slot:160;}
+.u-slot-161{--slot:161;}
+.u-slot-162{--slot:162;}
+.u-slot-163{--slot:163;}
+.u-slot-164{--slot:164;}
+.u-slot-165{--slot:165;}
+.u-slot-166{--slot:166;}
+.u-slot-167{--slot:167;}
+.u-slot-168{--slot:168;}
+.u-slot-169{--slot:169;}
+.u-slot-170{--slot:170;}
+.u-slot-171{--slot:171;}
+.u-slot-172{--slot:172;}
+.u-slot-173{--slot:173;}
+.u-slot-174{--slot:174;}
+.u-slot-175{--slot:175;}
+.u-slot-176{--slot:176;}
+.u-slot-177{--slot:177;}
+.u-slot-178{--slot:178;}
+.u-slot-179{--slot:179;}
+.u-slot-180{--slot:180;}
+.u-slot-181{--slot:181;}
+.u-slot-182{--slot:182;}
+.u-slot-183{--slot:183;}
+.u-slot-184{--slot:184;}
+.u-slot-185{--slot:185;}
+.u-slot-186{--slot:186;}
+.u-slot-187{--slot:187;}
+.u-slot-188{--slot:188;}
+.u-slot-189{--slot:189;}
+.u-slot-190{--slot:190;}
+.u-slot-191{--slot:191;}
+.u-slot-192{--slot:192;}
+.u-slot-193{--slot:193;}
+.u-slot-194{--slot:194;}
+.u-slot-195{--slot:195;}
+.u-slot-196{--slot:196;}
+.u-slot-197{--slot:197;}
+.u-slot-198{--slot:198;}
+.u-slot-199{--slot:199;}
+.u-slot-200{--slot:200;}
+
+/* generated spacing aliases */
+.u-space-001{margin:1px;}
+.u-space-002{margin:2px;}
+.u-space-003{margin:3px;}
+.u-space-004{margin:4px;}
+.u-space-005{margin:5px;}
+.u-space-006{margin:6px;}
+.u-space-007{margin:7px;}
+.u-space-008{margin:8px;}
+.u-space-009{margin:9px;}
+.u-space-010{margin:10px;}
+.u-space-011{margin:11px;}
+.u-space-012{margin:12px;}
+.u-space-013{margin:13px;}
+.u-space-014{margin:14px;}
+.u-space-015{margin:15px;}
+.u-space-016{margin:16px;}
+.u-space-017{margin:17px;}
+.u-space-018{margin:18px;}
+.u-space-019{margin:19px;}
+.u-space-020{margin:20px;}
+.u-space-021{margin:21px;}
+.u-space-022{margin:22px;}
+.u-space-023{margin:23px;}
+.u-space-024{margin:24px;}
+.u-space-025{margin:25px;}
+.u-space-026{margin:26px;}
+.u-space-027{margin:27px;}
+.u-space-028{margin:28px;}
+.u-space-029{margin:29px;}
+.u-space-030{margin:30px;}
+.u-space-031{margin:31px;}
+.u-space-032{margin:32px;}
+.u-space-033{margin:33px;}
+.u-space-034{margin:34px;}
+.u-space-035{margin:35px;}
+.u-space-036{margin:36px;}
+.u-space-037{margin:37px;}
+.u-space-038{margin:38px;}
+.u-space-039{margin:39px;}
+.u-space-040{margin:40px;}
+.u-space-041{margin:41px;}
+.u-space-042{margin:42px;}
+.u-space-043{margin:43px;}
+.u-space-044{margin:44px;}
+.u-space-045{margin:45px;}
+.u-space-046{margin:46px;}
+.u-space-047{margin:47px;}
+.u-space-048{margin:48px;}
+.u-space-049{margin:49px;}
+.u-space-050{margin:50px;}
+.u-space-051{margin:51px;}
+.u-space-052{margin:52px;}
+.u-space-053{margin:53px;}
+.u-space-054{margin:54px;}
+.u-space-055{margin:55px;}
+.u-space-056{margin:56px;}
+.u-space-057{margin:57px;}
+.u-space-058{margin:58px;}
+.u-space-059{margin:59px;}
+.u-space-060{margin:60px;}
+.u-space-061{margin:61px;}
+.u-space-062{margin:62px;}
+.u-space-063{margin:63px;}
+.u-space-064{margin:64px;}
+.u-space-065{margin:65px;}
+.u-space-066{margin:66px;}
+.u-space-067{margin:67px;}
+.u-space-068{margin:68px;}
+.u-space-069{margin:69px;}
+.u-space-070{margin:70px;}
+.u-space-071{margin:71px;}
+.u-space-072{margin:72px;}
+.u-space-073{margin:73px;}
+.u-space-074{margin:74px;}
+.u-space-075{margin:75px;}
+.u-space-076{margin:76px;}
+.u-space-077{margin:77px;}
+.u-space-078{margin:78px;}
+.u-space-079{margin:79px;}
+.u-space-080{margin:80px;}
+.u-space-081{margin:81px;}
+.u-space-082{margin:82px;}
+.u-space-083{margin:83px;}
+.u-space-084{margin:84px;}
+.u-space-085{margin:85px;}
+.u-space-086{margin:86px;}
+.u-space-087{margin:87px;}
+.u-space-088{margin:88px;}
+.u-space-089{margin:89px;}
+.u-space-090{margin:90px;}
+.u-space-091{margin:91px;}
+.u-space-092{margin:92px;}
+.u-space-093{margin:93px;}
+.u-space-094{margin:94px;}
+.u-space-095{margin:95px;}
+.u-space-096{margin:96px;}
+.u-space-097{margin:97px;}
+.u-space-098{margin:98px;}
+.u-space-099{margin:99px;}
+.u-space-100{margin:100px;}
+
+/* long-form style map blocks for extension */
+.u-map-001{--map:1;}
+.u-map-002{--map:2;}
+.u-map-003{--map:3;}
+.u-map-004{--map:4;}
+.u-map-005{--map:5;}
+.u-map-006{--map:6;}
+.u-map-007{--map:7;}
+.u-map-008{--map:8;}
+.u-map-009{--map:9;}
+.u-map-010{--map:10;}
+.u-map-011{--map:11;}
+.u-map-012{--map:12;}
+.u-map-013{--map:13;}
+.u-map-014{--map:14;}
+.u-map-015{--map:15;}
+.u-map-016{--map:16;}
+.u-map-017{--map:17;}
+.u-map-018{--map:18;}
+.u-map-019{--map:19;}
+.u-map-020{--map:20;}
+.u-map-021{--map:21;}
+.u-map-022{--map:22;}
+.u-map-023{--map:23;}
+.u-map-024{--map:24;}
+.u-map-025{--map:25;}
+.u-map-026{--map:26;}
+.u-map-027{--map:27;}
+.u-map-028{--map:28;}
+.u-map-029{--map:29;}
+.u-map-030{--map:30;}
+.u-map-031{--map:31;}
+.u-map-032{--map:32;}
+.u-map-033{--map:33;}
+.u-map-034{--map:34;}
+.u-map-035{--map:35;}
+.u-map-036{--map:36;}
+.u-map-037{--map:37;}
+.u-map-038{--map:38;}
+.u-map-039{--map:39;}
+.u-map-040{--map:40;}
+.u-map-041{--map:41;}
+.u-map-042{--map:42;}
+.u-map-043{--map:43;}
+.u-map-044{--map:44;}
+.u-map-045{--map:45;}
+.u-map-046{--map:46;}
+.u-map-047{--map:47;}
+.u-map-048{--map:48;}
+.u-map-049{--map:49;}
+.u-map-050{--map:50;}
+.u-map-051{--map:51;}
+.u-map-052{--map:52;}
+.u-map-053{--map:53;}
+.u-map-054{--map:54;}
+.u-map-055{--map:55;}
+.u-map-056{--map:56;}
+.u-map-057{--map:57;}
+.u-map-058{--map:58;}
+.u-map-059{--map:59;}
+.u-map-060{--map:60;}
+.u-map-061{--map:61;}
+.u-map-062{--map:62;}
+.u-map-063{--map:63;}
+.u-map-064{--map:64;}
+.u-map-065{--map:65;}
+.u-map-066{--map:66;}
+.u-map-067{--map:67;}
+.u-map-068{--map:68;}
+.u-map-069{--map:69;}
+.u-map-070{--map:70;}
+.u-map-071{--map:71;}
+.u-map-072{--map:72;}
+.u-map-073{--map:73;}
+.u-map-074{--map:74;}
+.u-map-075{--map:75;}
+.u-map-076{--map:76;}
+.u-map-077{--map:77;}
+.u-map-078{--map:78;}
+.u-map-079{--map:79;}
+.u-map-080{--map:80;}
+.u-map-081{--map:81;}
+.u-map-082{--map:82;}
+.u-map-083{--map:83;}
+.u-map-084{--map:84;}
+.u-map-085{--map:85;}
+.u-map-086{--map:86;}
+.u-map-087{--map:87;}
+.u-map-088{--map:88;}
+.u-map-089{--map:89;}
+.u-map-090{--map:90;}
+.u-map-091{--map:91;}
+.u-map-092{--map:92;}
+.u-map-093{--map:93;}
+.u-map-094{--map:94;}
+.u-map-095{--map:95;}
+.u-map-096{--map:96;}
+.u-map-097{--map:97;}
+.u-map-098{--map:98;}
+.u-map-099{--map:99;}
+.u-map-100{--map:100;}
+.u-map-101{--map:101;}
+.u-map-102{--map:102;}
+.u-map-103{--map:103;}
+.u-map-104{--map:104;}
+.u-map-105{--map:105;}
+.u-map-106{--map:106;}
+.u-map-107{--map:107;}
+.u-map-108{--map:108;}
+.u-map-109{--map:109;}
+.u-map-110{--map:110;}
+.u-map-111{--map:111;}
+.u-map-112{--map:112;}
+.u-map-113{--map:113;}
+.u-map-114{--map:114;}
+.u-map-115{--map:115;}
+.u-map-116{--map:116;}
+.u-map-117{--map:117;}
+.u-map-118{--map:118;}
+.u-map-119{--map:119;}
+.u-map-120{--map:120;}
+.u-map-121{--map:121;}
+.u-map-122{--map:122;}
+.u-map-123{--map:123;}
+.u-map-124{--map:124;}
+.u-map-125{--map:125;}
+.u-map-126{--map:126;}
+.u-map-127{--map:127;}
+.u-map-128{--map:128;}
+.u-map-129{--map:129;}
+.u-map-130{--map:130;}
+.u-map-131{--map:131;}
+.u-map-132{--map:132;}
+.u-map-133{--map:133;}
+.u-map-134{--map:134;}
+.u-map-135{--map:135;}
+.u-map-136{--map:136;}
+.u-map-137{--map:137;}
+.u-map-138{--map:138;}
+.u-map-139{--map:139;}
+.u-map-140{--map:140;}
+.u-map-141{--map:141;}
+.u-map-142{--map:142;}
+.u-map-143{--map:143;}
+.u-map-144{--map:144;}
+.u-map-145{--map:145;}
+.u-map-146{--map:146;}
+.u-map-147{--map:147;}
+.u-map-148{--map:148;}
+.u-map-149{--map:149;}
+.u-map-150{--map:150;}
+.u-map-151{--map:151;}
+.u-map-152{--map:152;}
+.u-map-153{--map:153;}
+.u-map-154{--map:154;}
+.u-map-155{--map:155;}
+.u-map-156{--map:156;}
+.u-map-157{--map:157;}
+.u-map-158{--map:158;}
+.u-map-159{--map:159;}
+.u-map-160{--map:160;}
+.u-map-161{--map:161;}
+.u-map-162{--map:162;}
+.u-map-163{--map:163;}
+.u-map-164{--map:164;}
+.u-map-165{--map:165;}
+.u-map-166{--map:166;}
+.u-map-167{--map:167;}
+.u-map-168{--map:168;}
+.u-map-169{--map:169;}
+.u-map-170{--map:170;}
+.u-map-171{--map:171;}
+.u-map-172{--map:172;}
+.u-map-173{--map:173;}
+.u-map-174{--map:174;}
+.u-map-175{--map:175;}
+.u-map-176{--map:176;}
+.u-map-177{--map:177;}
+.u-map-178{--map:178;}
+.u-map-179{--map:179;}
+.u-map-180{--map:180;}
+.u-map-181{--map:181;}
+.u-map-182{--map:182;}
+.u-map-183{--map:183;}
+.u-map-184{--map:184;}
+.u-map-185{--map:185;}
+.u-map-186{--map:186;}
+.u-map-187{--map:187;}
+.u-map-188{--map:188;}
+.u-map-189{--map:189;}
+.u-map-190{--map:190;}
+.u-map-191{--map:191;}
+.u-map-192{--map:192;}
+.u-map-193{--map:193;}
+.u-map-194{--map:194;}
+.u-map-195{--map:195;}
+.u-map-196{--map:196;}
+.u-map-197{--map:197;}
+.u-map-198{--map:198;}
+.u-map-199{--map:199;}
+.u-map-200{--map:200;}
+.u-ext-0201{--ext:0201;}
+.u-ext-0202{--ext:0202;}
+.u-ext-0203{--ext:0203;}
+.u-ext-0204{--ext:0204;}
+.u-ext-0205{--ext:0205;}
+.u-ext-0206{--ext:0206;}
+.u-ext-0207{--ext:0207;}
+.u-ext-0208{--ext:0208;}
+.u-ext-0209{--ext:0209;}
+.u-ext-0210{--ext:0210;}
+.u-ext-0211{--ext:0211;}
+.u-ext-0212{--ext:0212;}
+.u-ext-0213{--ext:0213;}
+.u-ext-0214{--ext:0214;}
+.u-ext-0215{--ext:0215;}
+.u-ext-0216{--ext:0216;}
+.u-ext-0217{--ext:0217;}
+.u-ext-0218{--ext:0218;}
+.u-ext-0219{--ext:0219;}
+.u-ext-0220{--ext:0220;}
+.u-ext-0221{--ext:0221;}
+.u-ext-0222{--ext:0222;}
+.u-ext-0223{--ext:0223;}
+.u-ext-0224{--ext:0224;}
+.u-ext-0225{--ext:0225;}
+.u-ext-0226{--ext:0226;}
+.u-ext-0227{--ext:0227;}
+.u-ext-0228{--ext:0228;}
+.u-ext-0229{--ext:0229;}
+.u-ext-0230{--ext:0230;}
+.u-ext-0231{--ext:0231;}
+.u-ext-0232{--ext:0232;}
+.u-ext-0233{--ext:0233;}
+.u-ext-0234{--ext:0234;}
+.u-ext-0235{--ext:0235;}
+.u-ext-0236{--ext:0236;}
+.u-ext-0237{--ext:0237;}
+.u-ext-0238{--ext:0238;}
+.u-ext-0239{--ext:0239;}
+.u-ext-0240{--ext:0240;}
+.u-ext-0241{--ext:0241;}
+.u-ext-0242{--ext:0242;}
+.u-ext-0243{--ext:0243;}
+.u-ext-0244{--ext:0244;}
+.u-ext-0245{--ext:0245;}
+.u-ext-0246{--ext:0246;}
+.u-ext-0247{--ext:0247;}
+.u-ext-0248{--ext:0248;}
+.u-ext-0249{--ext:0249;}
+.u-ext-0250{--ext:0250;}
+.u-ext-0251{--ext:0251;}
+.u-ext-0252{--ext:0252;}
+.u-ext-0253{--ext:0253;}
+.u-ext-0254{--ext:0254;}
+.u-ext-0255{--ext:0255;}
+.u-ext-0256{--ext:0256;}
+.u-ext-0257{--ext:0257;}
+.u-ext-0258{--ext:0258;}
+.u-ext-0259{--ext:0259;}
+.u-ext-0260{--ext:0260;}
+.u-ext-0261{--ext:0261;}
+.u-ext-0262{--ext:0262;}
+.u-ext-0263{--ext:0263;}
+.u-ext-0264{--ext:0264;}
+.u-ext-0265{--ext:0265;}
+.u-ext-0266{--ext:0266;}
+.u-ext-0267{--ext:0267;}
+.u-ext-0268{--ext:0268;}
+.u-ext-0269{--ext:0269;}
+.u-ext-0270{--ext:0270;}
+.u-ext-0271{--ext:0271;}
+.u-ext-0272{--ext:0272;}
+.u-ext-0273{--ext:0273;}
+.u-ext-0274{--ext:0274;}
+.u-ext-0275{--ext:0275;}
+.u-ext-0276{--ext:0276;}
+.u-ext-0277{--ext:0277;}
+.u-ext-0278{--ext:0278;}
+.u-ext-0279{--ext:0279;}
+.u-ext-0280{--ext:0280;}
+.u-ext-0281{--ext:0281;}
+.u-ext-0282{--ext:0282;}
+.u-ext-0283{--ext:0283;}
+.u-ext-0284{--ext:0284;}
+.u-ext-0285{--ext:0285;}
+.u-ext-0286{--ext:0286;}
+.u-ext-0287{--ext:0287;}
+.u-ext-0288{--ext:0288;}
+.u-ext-0289{--ext:0289;}
+.u-ext-0290{--ext:0290;}
+.u-ext-0291{--ext:0291;}
+.u-ext-0292{--ext:0292;}
+.u-ext-0293{--ext:0293;}
+.u-ext-0294{--ext:0294;}
+.u-ext-0295{--ext:0295;}
+.u-ext-0296{--ext:0296;}
+.u-ext-0297{--ext:0297;}
+.u-ext-0298{--ext:0298;}
+.u-ext-0299{--ext:0299;}
+.u-ext-0300{--ext:0300;}
+.u-ext-0301{--ext:0301;}
+.u-ext-0302{--ext:0302;}
+.u-ext-0303{--ext:0303;}
+.u-ext-0304{--ext:0304;}
+.u-ext-0305{--ext:0305;}
+.u-ext-0306{--ext:0306;}
+.u-ext-0307{--ext:0307;}
+.u-ext-0308{--ext:0308;}
+.u-ext-0309{--ext:0309;}
+.u-ext-0310{--ext:0310;}
+.u-ext-0311{--ext:0311;}
+.u-ext-0312{--ext:0312;}
+.u-ext-0313{--ext:0313;}
+.u-ext-0314{--ext:0314;}
+.u-ext-0315{--ext:0315;}
+.u-ext-0316{--ext:0316;}
+.u-ext-0317{--ext:0317;}
+.u-ext-0318{--ext:0318;}
+.u-ext-0319{--ext:0319;}
+.u-ext-0320{--ext:0320;}
+.u-ext-0321{--ext:0321;}
+.u-ext-0322{--ext:0322;}
+.u-ext-0323{--ext:0323;}
+.u-ext-0324{--ext:0324;}
+.u-ext-0325{--ext:0325;}
+.u-ext-0326{--ext:0326;}
+.u-ext-0327{--ext:0327;}
+.u-ext-0328{--ext:0328;}
+.u-ext-0329{--ext:0329;}
+.u-ext-0330{--ext:0330;}
+.u-ext-0331{--ext:0331;}
+.u-ext-0332{--ext:0332;}
+.u-ext-0333{--ext:0333;}
+.u-ext-0334{--ext:0334;}
+.u-ext-0335{--ext:0335;}
+.u-ext-0336{--ext:0336;}
+.u-ext-0337{--ext:0337;}
+.u-ext-0338{--ext:0338;}
+.u-ext-0339{--ext:0339;}
+.u-ext-0340{--ext:0340;}
+.u-ext-0341{--ext:0341;}
+.u-ext-0342{--ext:0342;}
+.u-ext-0343{--ext:0343;}
+.u-ext-0344{--ext:0344;}
+.u-ext-0345{--ext:0345;}
+.u-ext-0346{--ext:0346;}
+.u-ext-0347{--ext:0347;}
+.u-ext-0348{--ext:0348;}
+.u-ext-0349{--ext:0349;}
+.u-ext-0350{--ext:0350;}
+.u-ext-0351{--ext:0351;}
+.u-ext-0352{--ext:0352;}
+.u-ext-0353{--ext:0353;}
+.u-ext-0354{--ext:0354;}
+.u-ext-0355{--ext:0355;}
+.u-ext-0356{--ext:0356;}
+.u-ext-0357{--ext:0357;}
+.u-ext-0358{--ext:0358;}
+.u-ext-0359{--ext:0359;}
+.u-ext-0360{--ext:0360;}
+.u-ext-0361{--ext:0361;}
+.u-ext-0362{--ext:0362;}
+.u-ext-0363{--ext:0363;}
+.u-ext-0364{--ext:0364;}
+.u-ext-0365{--ext:0365;}
+.u-ext-0366{--ext:0366;}
+.u-ext-0367{--ext:0367;}
+.u-ext-0368{--ext:0368;}
+.u-ext-0369{--ext:0369;}
+.u-ext-0370{--ext:0370;}
+.u-ext-0371{--ext:0371;}
+.u-ext-0372{--ext:0372;}
+.u-ext-0373{--ext:0373;}
+.u-ext-0374{--ext:0374;}
+.u-ext-0375{--ext:0375;}
+.u-ext-0376{--ext:0376;}
+.u-ext-0377{--ext:0377;}
+.u-ext-0378{--ext:0378;}
+.u-ext-0379{--ext:0379;}
+.u-ext-0380{--ext:0380;}
+.u-ext-0381{--ext:0381;}
+.u-ext-0382{--ext:0382;}
+.u-ext-0383{--ext:0383;}
+.u-ext-0384{--ext:0384;}
+.u-ext-0385{--ext:0385;}
+.u-ext-0386{--ext:0386;}
+.u-ext-0387{--ext:0387;}
+.u-ext-0388{--ext:0388;}
+.u-ext-0389{--ext:0389;}
+.u-ext-0390{--ext:0390;}
+.u-ext-0391{--ext:0391;}
+.u-ext-0392{--ext:0392;}
+.u-ext-0393{--ext:0393;}
+.u-ext-0394{--ext:0394;}
+.u-ext-0395{--ext:0395;}
+.u-ext-0396{--ext:0396;}
+.u-ext-0397{--ext:0397;}
+.u-ext-0398{--ext:0398;}
+.u-ext-0399{--ext:0399;}
+.u-ext-0400{--ext:0400;}
+.u-ext-0401{--ext:0401;}
+.u-ext-0402{--ext:0402;}
+.u-ext-0403{--ext:0403;}
+.u-ext-0404{--ext:0404;}
+.u-ext-0405{--ext:0405;}
+.u-ext-0406{--ext:0406;}
+.u-ext-0407{--ext:0407;}
+.u-ext-0408{--ext:0408;}
+.u-ext-0409{--ext:0409;}
+.u-ext-0410{--ext:0410;}
+.u-ext-0411{--ext:0411;}
+.u-ext-0412{--ext:0412;}
+.u-ext-0413{--ext:0413;}
+.u-ext-0414{--ext:0414;}
+.u-ext-0415{--ext:0415;}
+.u-ext-0416{--ext:0416;}
+.u-ext-0417{--ext:0417;}
+.u-ext-0418{--ext:0418;}
+.u-ext-0419{--ext:0419;}
+.u-ext-0420{--ext:0420;}
+.u-ext-0421{--ext:0421;}
+.u-ext-0422{--ext:0422;}
+.u-ext-0423{--ext:0423;}
+.u-ext-0424{--ext:0424;}
+.u-ext-0425{--ext:0425;}
+.u-ext-0426{--ext:0426;}
+.u-ext-0427{--ext:0427;}
+.u-ext-0428{--ext:0428;}
+.u-ext-0429{--ext:0429;}
+.u-ext-0430{--ext:0430;}
+.u-ext-0431{--ext:0431;}
+.u-ext-0432{--ext:0432;}
+.u-ext-0433{--ext:0433;}
+.u-ext-0434{--ext:0434;}
+.u-ext-0435{--ext:0435;}
+.u-ext-0436{--ext:0436;}
+.u-ext-0437{--ext:0437;}
+.u-ext-0438{--ext:0438;}
+.u-ext-0439{--ext:0439;}
+.u-ext-0440{--ext:0440;}
+.u-ext-0441{--ext:0441;}
+.u-ext-0442{--ext:0442;}
+.u-ext-0443{--ext:0443;}
+.u-ext-0444{--ext:0444;}
+.u-ext-0445{--ext:0445;}
+.u-ext-0446{--ext:0446;}
+.u-ext-0447{--ext:0447;}
+.u-ext-0448{--ext:0448;}
+.u-ext-0449{--ext:0449;}
+.u-ext-0450{--ext:0450;}
+.u-ext-0451{--ext:0451;}
+.u-ext-0452{--ext:0452;}
+.u-ext-0453{--ext:0453;}
+.u-ext-0454{--ext:0454;}
+.u-ext-0455{--ext:0455;}
+.u-ext-0456{--ext:0456;}
+.u-ext-0457{--ext:0457;}
+.u-ext-0458{--ext:0458;}
+.u-ext-0459{--ext:0459;}
+.u-ext-0460{--ext:0460;}
+.u-ext-0461{--ext:0461;}
+.u-ext-0462{--ext:0462;}
+.u-ext-0463{--ext:0463;}
+.u-ext-0464{--ext:0464;}
+.u-ext-0465{--ext:0465;}
+.u-ext-0466{--ext:0466;}
+.u-ext-0467{--ext:0467;}
+.u-ext-0468{--ext:0468;}
+.u-ext-0469{--ext:0469;}
+.u-ext-0470{--ext:0470;}
+.u-ext-0471{--ext:0471;}
+.u-ext-0472{--ext:0472;}
+.u-ext-0473{--ext:0473;}
+.u-ext-0474{--ext:0474;}
+.u-ext-0475{--ext:0475;}
+.u-ext-0476{--ext:0476;}
+.u-ext-0477{--ext:0477;}
+.u-ext-0478{--ext:0478;}
+.u-ext-0479{--ext:0479;}
+.u-ext-0480{--ext:0480;}
+.u-ext-0481{--ext:0481;}
+.u-ext-0482{--ext:0482;}
+.u-ext-0483{--ext:0483;}
+.u-ext-0484{--ext:0484;}
+.u-ext-0485{--ext:0485;}
+.u-ext-0486{--ext:0486;}
+.u-ext-0487{--ext:0487;}
+.u-ext-0488{--ext:0488;}
+.u-ext-0489{--ext:0489;}
+.u-ext-0490{--ext:0490;}
+.u-ext-0491{--ext:0491;}
+.u-ext-0492{--ext:0492;}
+.u-ext-0493{--ext:0493;}
+.u-ext-0494{--ext:0494;}
+.u-ext-0495{--ext:0495;}
+.u-ext-0496{--ext:0496;}
+.u-ext-0497{--ext:0497;}
+.u-ext-0498{--ext:0498;}
+.u-ext-0499{--ext:0499;}
+.u-ext-0500{--ext:0500;}
+.u-ext-0501{--ext:0501;}
+.u-ext-0502{--ext:0502;}
+.u-ext-0503{--ext:0503;}
+.u-ext-0504{--ext:0504;}
+.u-ext-0505{--ext:0505;}
+.u-ext-0506{--ext:0506;}
+.u-ext-0507{--ext:0507;}
+.u-ext-0508{--ext:0508;}
+.u-ext-0509{--ext:0509;}
+.u-ext-0510{--ext:0510;}
+.u-ext-0511{--ext:0511;}
+.u-ext-0512{--ext:0512;}
+.u-ext-0513{--ext:0513;}
+.u-ext-0514{--ext:0514;}
+.u-ext-0515{--ext:0515;}
+.u-ext-0516{--ext:0516;}
+.u-ext-0517{--ext:0517;}
+.u-ext-0518{--ext:0518;}
+.u-ext-0519{--ext:0519;}
+.u-ext-0520{--ext:0520;}
+.u-ext-0521{--ext:0521;}
+.u-ext-0522{--ext:0522;}
+.u-ext-0523{--ext:0523;}
+.u-ext-0524{--ext:0524;}
+.u-ext-0525{--ext:0525;}
+.u-ext-0526{--ext:0526;}
+.u-ext-0527{--ext:0527;}
+.u-ext-0528{--ext:0528;}
+.u-ext-0529{--ext:0529;}
+.u-ext-0530{--ext:0530;}
+.u-ext-0531{--ext:0531;}
+.u-ext-0532{--ext:0532;}
+.u-ext-0533{--ext:0533;}
+.u-ext-0534{--ext:0534;}
+.u-ext-0535{--ext:0535;}
+.u-ext-0536{--ext:0536;}
+.u-ext-0537{--ext:0537;}
+.u-ext-0538{--ext:0538;}
+.u-ext-0539{--ext:0539;}
+.u-ext-0540{--ext:0540;}
+.u-ext-0541{--ext:0541;}
+.u-ext-0542{--ext:0542;}
+.u-ext-0543{--ext:0543;}
+.u-ext-0544{--ext:0544;}
+.u-ext-0545{--ext:0545;}
+.u-ext-0546{--ext:0546;}
+.u-ext-0547{--ext:0547;}
+.u-ext-0548{--ext:0548;}
+.u-ext-0549{--ext:0549;}
+.u-ext-0550{--ext:0550;}
+.u-ext-0551{--ext:0551;}
+.u-ext-0552{--ext:0552;}
+.u-ext-0553{--ext:0553;}
+.u-ext-0554{--ext:0554;}
+.u-ext-0555{--ext:0555;}
+.u-ext-0556{--ext:0556;}
+.u-ext-0557{--ext:0557;}
+.u-ext-0558{--ext:0558;}
+.u-ext-0559{--ext:0559;}
+.u-ext-0560{--ext:0560;}
+.u-ext-0561{--ext:0561;}
+.u-ext-0562{--ext:0562;}
+.u-ext-0563{--ext:0563;}
+.u-ext-0564{--ext:0564;}
+.u-ext-0565{--ext:0565;}
+.u-ext-0566{--ext:0566;}
+.u-ext-0567{--ext:0567;}
+.u-ext-0568{--ext:0568;}
+.u-ext-0569{--ext:0569;}
+.u-ext-0570{--ext:0570;}
+.u-ext-0571{--ext:0571;}
+.u-ext-0572{--ext:0572;}
+.u-ext-0573{--ext:0573;}
+.u-ext-0574{--ext:0574;}
+.u-ext-0575{--ext:0575;}
+.u-ext-0576{--ext:0576;}
+.u-ext-0577{--ext:0577;}
+.u-ext-0578{--ext:0578;}
+.u-ext-0579{--ext:0579;}
+.u-ext-0580{--ext:0580;}
+.u-ext-0581{--ext:0581;}
+.u-ext-0582{--ext:0582;}
+.u-ext-0583{--ext:0583;}
+.u-ext-0584{--ext:0584;}
+.u-ext-0585{--ext:0585;}
+.u-ext-0586{--ext:0586;}
+.u-ext-0587{--ext:0587;}
+.u-ext-0588{--ext:0588;}
+.u-ext-0589{--ext:0589;}
+.u-ext-0590{--ext:0590;}
+.u-ext-0591{--ext:0591;}
+.u-ext-0592{--ext:0592;}
+.u-ext-0593{--ext:0593;}
+.u-ext-0594{--ext:0594;}
+.u-ext-0595{--ext:0595;}
+.u-ext-0596{--ext:0596;}
+.u-ext-0597{--ext:0597;}
+.u-ext-0598{--ext:0598;}
+.u-ext-0599{--ext:0599;}
+.u-ext-0600{--ext:0600;}
+.u-ext-0601{--ext:0601;}
+.u-ext-0602{--ext:0602;}
+.u-ext-0603{--ext:0603;}
+.u-ext-0604{--ext:0604;}
+.u-ext-0605{--ext:0605;}
+.u-ext-0606{--ext:0606;}
+.u-ext-0607{--ext:0607;}
+.u-ext-0608{--ext:0608;}
+.u-ext-0609{--ext:0609;}
+.u-ext-0610{--ext:0610;}
+.u-ext-0611{--ext:0611;}
+.u-ext-0612{--ext:0612;}
+.u-ext-0613{--ext:0613;}
+.u-ext-0614{--ext:0614;}
+.u-ext-0615{--ext:0615;}
+.u-ext-0616{--ext:0616;}
+.u-ext-0617{--ext:0617;}
+.u-ext-0618{--ext:0618;}
+.u-ext-0619{--ext:0619;}
+.u-ext-0620{--ext:0620;}
+.u-ext-0621{--ext:0621;}
+.u-ext-0622{--ext:0622;}
+.u-ext-0623{--ext:0623;}
+.u-ext-0624{--ext:0624;}
+.u-ext-0625{--ext:0625;}
+.u-ext-0626{--ext:0626;}
+.u-ext-0627{--ext:0627;}
+.u-ext-0628{--ext:0628;}
+.u-ext-0629{--ext:0629;}
+.u-ext-0630{--ext:0630;}
+.u-ext-0631{--ext:0631;}
+.u-ext-0632{--ext:0632;}
+.u-ext-0633{--ext:0633;}
+.u-ext-0634{--ext:0634;}
+.u-ext-0635{--ext:0635;}
+.u-ext-0636{--ext:0636;}
+.u-ext-0637{--ext:0637;}
+.u-ext-0638{--ext:0638;}
+.u-ext-0639{--ext:0639;}
+.u-ext-0640{--ext:0640;}
+.u-ext-0641{--ext:0641;}
+.u-ext-0642{--ext:0642;}
+.u-ext-0643{--ext:0643;}
+.u-ext-0644{--ext:0644;}
+.u-ext-0645{--ext:0645;}
+.u-ext-0646{--ext:0646;}
+.u-ext-0647{--ext:0647;}
+.u-ext-0648{--ext:0648;}
+.u-ext-0649{--ext:0649;}
+.u-ext-0650{--ext:0650;}
+.u-ext-0651{--ext:0651;}
+.u-ext-0652{--ext:0652;}
+.u-ext-0653{--ext:0653;}
+.u-ext-0654{--ext:0654;}
+.u-ext-0655{--ext:0655;}
+.u-ext-0656{--ext:0656;}
+.u-ext-0657{--ext:0657;}
+.u-ext-0658{--ext:0658;}
+.u-ext-0659{--ext:0659;}
+.u-ext-0660{--ext:0660;}
+.u-ext-0661{--ext:0661;}
+.u-ext-0662{--ext:0662;}
+.u-ext-0663{--ext:0663;}
+.u-ext-0664{--ext:0664;}
+.u-ext-0665{--ext:0665;}
+.u-ext-0666{--ext:0666;}
+.u-ext-0667{--ext:0667;}
+.u-ext-0668{--ext:0668;}
+.u-ext-0669{--ext:0669;}
+.u-ext-0670{--ext:0670;}
+.u-ext-0671{--ext:0671;}
+.u-ext-0672{--ext:0672;}
+.u-ext-0673{--ext:0673;}
+.u-ext-0674{--ext:0674;}
+.u-ext-0675{--ext:0675;}
+.u-ext-0676{--ext:0676;}
+.u-ext-0677{--ext:0677;}
+.u-ext-0678{--ext:0678;}
+.u-ext-0679{--ext:0679;}
+.u-ext-0680{--ext:0680;}
+.u-ext-0681{--ext:0681;}
+.u-ext-0682{--ext:0682;}
+.u-ext-0683{--ext:0683;}
+.u-ext-0684{--ext:0684;}
+.u-ext-0685{--ext:0685;}
+.u-ext-0686{--ext:0686;}
+.u-ext-0687{--ext:0687;}
+.u-ext-0688{--ext:0688;}
+.u-ext-0689{--ext:0689;}
+.u-ext-0690{--ext:0690;}
+.u-ext-0691{--ext:0691;}
+.u-ext-0692{--ext:0692;}
+.u-ext-0693{--ext:0693;}
+.u-ext-0694{--ext:0694;}
+.u-ext-0695{--ext:0695;}
+.u-ext-0696{--ext:0696;}
+.u-ext-0697{--ext:0697;}
+.u-ext-0698{--ext:0698;}
+.u-ext-0699{--ext:0699;}
+.u-ext-0700{--ext:0700;}
+.u-ext-0701{--ext:0701;}
+.u-ext-0702{--ext:0702;}
+.u-ext-0703{--ext:0703;}
+.u-ext-0704{--ext:0704;}
+.u-ext-0705{--ext:0705;}
+.u-ext-0706{--ext:0706;}
+.u-ext-0707{--ext:0707;}
+.u-ext-0708{--ext:0708;}
+.u-ext-0709{--ext:0709;}
+.u-ext-0710{--ext:0710;}
+.u-ext-0711{--ext:0711;}
+.u-ext-0712{--ext:0712;}
+.u-ext-0713{--ext:0713;}
+.u-ext-0714{--ext:0714;}
+.u-ext-0715{--ext:0715;}
+.u-ext-0716{--ext:0716;}
+.u-ext-0717{--ext:0717;}
+.u-ext-0718{--ext:0718;}
+.u-ext-0719{--ext:0719;}
+.u-ext-0720{--ext:0720;}
+.u-ext-0721{--ext:0721;}
+.u-ext-0722{--ext:0722;}
+.u-ext-0723{--ext:0723;}
+.u-ext-0724{--ext:0724;}
+.u-ext-0725{--ext:0725;}
+.u-ext-0726{--ext:0726;}
+.u-ext-0727{--ext:0727;}
+.u-ext-0728{--ext:0728;}
+.u-ext-0729{--ext:0729;}
+.u-ext-0730{--ext:0730;}
+.u-ext-0731{--ext:0731;}
+.u-ext-0732{--ext:0732;}
+.u-ext-0733{--ext:0733;}
+.u-ext-0734{--ext:0734;}
+.u-ext-0735{--ext:0735;}
+.u-ext-0736{--ext:0736;}
+.u-ext-0737{--ext:0737;}
+.u-ext-0738{--ext:0738;}
+.u-ext-0739{--ext:0739;}
+.u-ext-0740{--ext:0740;}
+.u-ext-0741{--ext:0741;}
+.u-ext-0742{--ext:0742;}
+.u-ext-0743{--ext:0743;}
+.u-ext-0744{--ext:0744;}
+.u-ext-0745{--ext:0745;}
+.u-ext-0746{--ext:0746;}
+.u-ext-0747{--ext:0747;}
+.u-ext-0748{--ext:0748;}
+.u-ext-0749{--ext:0749;}
+.u-ext-0750{--ext:0750;}
+.u-ext-0751{--ext:0751;}
+.u-ext-0752{--ext:0752;}
+.u-ext-0753{--ext:0753;}
+.u-ext-0754{--ext:0754;}
+.u-ext-0755{--ext:0755;}
+.u-ext-0756{--ext:0756;}
+.u-ext-0757{--ext:0757;}
+.u-ext-0758{--ext:0758;}
+.u-ext-0759{--ext:0759;}
+.u-ext-0760{--ext:0760;}
+.u-ext-0761{--ext:0761;}
+.u-ext-0762{--ext:0762;}
+.u-ext-0763{--ext:0763;}
+.u-ext-0764{--ext:0764;}
+.u-ext-0765{--ext:0765;}
+.u-ext-0766{--ext:0766;}
+.u-ext-0767{--ext:0767;}
+.u-ext-0768{--ext:0768;}
+.u-ext-0769{--ext:0769;}
+.u-ext-0770{--ext:0770;}
+.u-ext-0771{--ext:0771;}
+.u-ext-0772{--ext:0772;}
+.u-ext-0773{--ext:0773;}
+.u-ext-0774{--ext:0774;}
+.u-ext-0775{--ext:0775;}
+.u-ext-0776{--ext:0776;}
+.u-ext-0777{--ext:0777;}
+.u-ext-0778{--ext:0778;}
+.u-ext-0779{--ext:0779;}
+.u-ext-0780{--ext:0780;}
+.u-ext-0781{--ext:0781;}
+.u-ext-0782{--ext:0782;}
+.u-ext-0783{--ext:0783;}
+.u-ext-0784{--ext:0784;}
+.u-ext-0785{--ext:0785;}
+.u-ext-0786{--ext:0786;}
+.u-ext-0787{--ext:0787;}
+.u-ext-0788{--ext:0788;}
+.u-ext-0789{--ext:0789;}
+.u-ext-0790{--ext:0790;}
+.u-ext-0791{--ext:0791;}
+.u-ext-0792{--ext:0792;}
+.u-ext-0793{--ext:0793;}
+.u-ext-0794{--ext:0794;}
+.u-ext-0795{--ext:0795;}
+.u-ext-0796{--ext:0796;}
+.u-ext-0797{--ext:0797;}
+.u-ext-0798{--ext:0798;}
+.u-ext-0799{--ext:0799;}
+.u-ext-0800{--ext:0800;}
+.u-ext-0801{--ext:0801;}
+.u-ext-0802{--ext:0802;}
+.u-ext-0803{--ext:0803;}
+.u-ext-0804{--ext:0804;}
+.u-ext-0805{--ext:0805;}
+.u-ext-0806{--ext:0806;}
+.u-ext-0807{--ext:0807;}
+.u-ext-0808{--ext:0808;}
+.u-ext-0809{--ext:0809;}
+.u-ext-0810{--ext:0810;}
+.u-ext-0811{--ext:0811;}
+.u-ext-0812{--ext:0812;}
+.u-ext-0813{--ext:0813;}
+.u-ext-0814{--ext:0814;}
+.u-ext-0815{--ext:0815;}
+.u-ext-0816{--ext:0816;}
+.u-ext-0817{--ext:0817;}
+.u-ext-0818{--ext:0818;}
+.u-ext-0819{--ext:0819;}
+.u-ext-0820{--ext:0820;}
+.u-ext-0821{--ext:0821;}
+.u-ext-0822{--ext:0822;}
+.u-ext-0823{--ext:0823;}
+.u-ext-0824{--ext:0824;}
+.u-ext-0825{--ext:0825;}
+.u-ext-0826{--ext:0826;}
+.u-ext-0827{--ext:0827;}
+.u-ext-0828{--ext:0828;}
+.u-ext-0829{--ext:0829;}
+.u-ext-0830{--ext:0830;}
+.u-ext-0831{--ext:0831;}
+.u-ext-0832{--ext:0832;}
+.u-ext-0833{--ext:0833;}
+.u-ext-0834{--ext:0834;}
+.u-ext-0835{--ext:0835;}
+.u-ext-0836{--ext:0836;}
+.u-ext-0837{--ext:0837;}
+.u-ext-0838{--ext:0838;}
+.u-ext-0839{--ext:0839;}
+.u-ext-0840{--ext:0840;}
+.u-ext-0841{--ext:0841;}
+.u-ext-0842{--ext:0842;}
+.u-ext-0843{--ext:0843;}
+.u-ext-0844{--ext:0844;}
+.u-ext-0845{--ext:0845;}
+.u-ext-0846{--ext:0846;}
+.u-ext-0847{--ext:0847;}
+.u-ext-0848{--ext:0848;}
+.u-ext-0849{--ext:0849;}
+.u-ext-0850{--ext:0850;}
+.u-ext-0851{--ext:0851;}
+.u-ext-0852{--ext:0852;}
+.u-ext-0853{--ext:0853;}
+.u-ext-0854{--ext:0854;}
+.u-ext-0855{--ext:0855;}
+.u-ext-0856{--ext:0856;}
+.u-ext-0857{--ext:0857;}
+.u-ext-0858{--ext:0858;}
+.u-ext-0859{--ext:0859;}
+.u-ext-0860{--ext:0860;}
+.u-ext-0861{--ext:0861;}
+.u-ext-0862{--ext:0862;}
+.u-ext-0863{--ext:0863;}
+.u-ext-0864{--ext:0864;}
+.u-ext-0865{--ext:0865;}
+.u-ext-0866{--ext:0866;}
+.u-ext-0867{--ext:0867;}
+.u-ext-0868{--ext:0868;}
+.u-ext-0869{--ext:0869;}
+.u-ext-0870{--ext:0870;}
+.u-ext-0871{--ext:0871;}
+.u-ext-0872{--ext:0872;}
+.u-ext-0873{--ext:0873;}
+.u-ext-0874{--ext:0874;}
+.u-ext-0875{--ext:0875;}
+.u-ext-0876{--ext:0876;}
+.u-ext-0877{--ext:0877;}
+.u-ext-0878{--ext:0878;}
+.u-ext-0879{--ext:0879;}
+.u-ext-0880{--ext:0880;}
+.u-ext-0881{--ext:0881;}
+.u-ext-0882{--ext:0882;}
+.u-ext-0883{--ext:0883;}
+.u-ext-0884{--ext:0884;}
+.u-ext-0885{--ext:0885;}
+.u-ext-0886{--ext:0886;}
+.u-ext-0887{--ext:0887;}
+.u-ext-0888{--ext:0888;}
+.u-ext-0889{--ext:0889;}
+.u-ext-0890{--ext:0890;}
+.u-ext-0891{--ext:0891;}
+.u-ext-0892{--ext:0892;}
+.u-ext-0893{--ext:0893;}
+.u-ext-0894{--ext:0894;}
+.u-ext-0895{--ext:0895;}
+.u-ext-0896{--ext:0896;}
+.u-ext-0897{--ext:0897;}
+.u-ext-0898{--ext:0898;}
+.u-ext-0899{--ext:0899;}
+.u-ext-0900{--ext:0900;}
+.u-ext-0901{--ext:0901;}
+.u-ext-0902{--ext:0902;}
+.u-ext-0903{--ext:0903;}
+.u-ext-0904{--ext:0904;}
+.u-ext-0905{--ext:0905;}
+.u-ext-0906{--ext:0906;}
+.u-ext-0907{--ext:0907;}
+.u-ext-0908{--ext:0908;}
+.u-ext-0909{--ext:0909;}
+.u-ext-0910{--ext:0910;}
+.u-ext-0911{--ext:0911;}
+.u-ext-0912{--ext:0912;}
+.u-ext-0913{--ext:0913;}
+.u-ext-0914{--ext:0914;}
+.u-ext-0915{--ext:0915;}
+.u-ext-0916{--ext:0916;}
+.u-ext-0917{--ext:0917;}
+.u-ext-0918{--ext:0918;}
+.u-ext-0919{--ext:0919;}
+.u-ext-0920{--ext:0920;}
+.u-ext-0921{--ext:0921;}
+.u-ext-0922{--ext:0922;}
+.u-ext-0923{--ext:0923;}
+.u-ext-0924{--ext:0924;}
+.u-ext-0925{--ext:0925;}
+.u-ext-0926{--ext:0926;}
+.u-ext-0927{--ext:0927;}
+.u-ext-0928{--ext:0928;}
+.u-ext-0929{--ext:0929;}
+.u-ext-0930{--ext:0930;}
+.u-ext-0931{--ext:0931;}
+.u-ext-0932{--ext:0932;}
+.u-ext-0933{--ext:0933;}
+.u-ext-0934{--ext:0934;}
+.u-ext-0935{--ext:0935;}
+.u-ext-0936{--ext:0936;}
+.u-ext-0937{--ext:0937;}
+.u-ext-0938{--ext:0938;}
+.u-ext-0939{--ext:0939;}
+.u-ext-0940{--ext:0940;}
+.u-ext-0941{--ext:0941;}
+.u-ext-0942{--ext:0942;}
+.u-ext-0943{--ext:0943;}
+.u-ext-0944{--ext:0944;}
+.u-ext-0945{--ext:0945;}
+.u-ext-0946{--ext:0946;}
+.u-ext-0947{--ext:0947;}
+.u-ext-0948{--ext:0948;}
+.u-ext-0949{--ext:0949;}
+.u-ext-0950{--ext:0950;}
+.u-ext-0951{--ext:0951;}
+.u-ext-0952{--ext:0952;}
+.u-ext-0953{--ext:0953;}
+.u-ext-0954{--ext:0954;}
+.u-ext-0955{--ext:0955;}
+.u-ext-0956{--ext:0956;}
+.u-ext-0957{--ext:0957;}
+.u-ext-0958{--ext:0958;}
+.u-ext-0959{--ext:0959;}
+.u-ext-0960{--ext:0960;}
+.u-ext-0961{--ext:0961;}
+.u-ext-0962{--ext:0962;}
+.u-ext-0963{--ext:0963;}
+.u-ext-0964{--ext:0964;}
+.u-ext-0965{--ext:0965;}
+.u-ext-0966{--ext:0966;}
+.u-ext-0967{--ext:0967;}
+.u-ext-0968{--ext:0968;}
+.u-ext-0969{--ext:0969;}
+.u-ext-0970{--ext:0970;}
+.u-ext-0971{--ext:0971;}
+.u-ext-0972{--ext:0972;}
+.u-ext-0973{--ext:0973;}
+.u-ext-0974{--ext:0974;}
+.u-ext-0975{--ext:0975;}
+.u-ext-0976{--ext:0976;}
+.u-ext-0977{--ext:0977;}
+.u-ext-0978{--ext:0978;}
+.u-ext-0979{--ext:0979;}
+.u-ext-0980{--ext:0980;}
+.u-ext-0981{--ext:0981;}
+.u-ext-0982{--ext:0982;}
+.u-ext-0983{--ext:0983;}
+.u-ext-0984{--ext:0984;}
+.u-ext-0985{--ext:0985;}
+.u-ext-0986{--ext:0986;}
+.u-ext-0987{--ext:0987;}
+.u-ext-0988{--ext:0988;}
+.u-ext-0989{--ext:0989;}
+.u-ext-0990{--ext:0990;}
+.u-ext-0991{--ext:0991;}
+.u-ext-0992{--ext:0992;}
+.u-ext-0993{--ext:0993;}
+.u-ext-0994{--ext:0994;}
+.u-ext-0995{--ext:0995;}
+.u-ext-0996{--ext:0996;}
+.u-ext-0997{--ext:0997;}
+.u-ext-0998{--ext:0998;}
+.u-ext-0999{--ext:0999;}
+.u-ext-1000{--ext:1000;}
+.u-ext-1001{--ext:1001;}
+.u-ext-1002{--ext:1002;}
+.u-ext-1003{--ext:1003;}
+.u-ext-1004{--ext:1004;}
+.u-ext-1005{--ext:1005;}
+.u-ext-1006{--ext:1006;}
+.u-ext-1007{--ext:1007;}
+.u-ext-1008{--ext:1008;}
+.u-ext-1009{--ext:1009;}
+.u-ext-1010{--ext:1010;}
+.u-ext-1011{--ext:1011;}
+.u-ext-1012{--ext:1012;}
+.u-ext-1013{--ext:1013;}
+.u-ext-1014{--ext:1014;}
+.u-ext-1015{--ext:1015;}
+.u-ext-1016{--ext:1016;}
+.u-ext-1017{--ext:1017;}
+.u-ext-1018{--ext:1018;}
+.u-ext-1019{--ext:1019;}
+.u-ext-1020{--ext:1020;}
+.u-ext-1021{--ext:1021;}
+.u-ext-1022{--ext:1022;}
+.u-ext-1023{--ext:1023;}
+.u-ext-1024{--ext:1024;}
+.u-ext-1025{--ext:1025;}
+.u-ext-1026{--ext:1026;}
+.u-ext-1027{--ext:1027;}
+.u-ext-1028{--ext:1028;}
+.u-ext-1029{--ext:1029;}
+.u-ext-1030{--ext:1030;}
+.u-ext-1031{--ext:1031;}
+.u-ext-1032{--ext:1032;}
+.u-ext-1033{--ext:1033;}
+.u-ext-1034{--ext:1034;}
+.u-ext-1035{--ext:1035;}
+.u-ext-1036{--ext:1036;}
+.u-ext-1037{--ext:1037;}
+.u-ext-1038{--ext:1038;}
+.u-ext-1039{--ext:1039;}
+.u-ext-1040{--ext:1040;}
+.u-ext-1041{--ext:1041;}
+.u-ext-1042{--ext:1042;}
+.u-ext-1043{--ext:1043;}
+.u-ext-1044{--ext:1044;}
+.u-ext-1045{--ext:1045;}
+.u-ext-1046{--ext:1046;}
+.u-ext-1047{--ext:1047;}
+.u-ext-1048{--ext:1048;}
+.u-ext-1049{--ext:1049;}
+.u-ext-1050{--ext:1050;}
+.u-ext-1051{--ext:1051;}
+.u-ext-1052{--ext:1052;}
+.u-ext-1053{--ext:1053;}
+.u-ext-1054{--ext:1054;}
+.u-ext-1055{--ext:1055;}
+.u-ext-1056{--ext:1056;}
+.u-ext-1057{--ext:1057;}
+.u-ext-1058{--ext:1058;}
+.u-ext-1059{--ext:1059;}
+.u-ext-1060{--ext:1060;}
+.u-ext-1061{--ext:1061;}
+.u-ext-1062{--ext:1062;}
+.u-ext-1063{--ext:1063;}
+.u-ext-1064{--ext:1064;}
+.u-ext-1065{--ext:1065;}
+.u-ext-1066{--ext:1066;}
+.u-ext-1067{--ext:1067;}
+.u-ext-1068{--ext:1068;}
+.u-ext-1069{--ext:1069;}
+.u-ext-1070{--ext:1070;}
+.u-ext-1071{--ext:1071;}
+.u-ext-1072{--ext:1072;}
+.u-ext-1073{--ext:1073;}
+.u-ext-1074{--ext:1074;}
+.u-ext-1075{--ext:1075;}
+.u-ext-1076{--ext:1076;}
+.u-ext-1077{--ext:1077;}
+.u-ext-1078{--ext:1078;}
+.u-ext-1079{--ext:1079;}
+.u-ext-1080{--ext:1080;}
+.u-ext-1081{--ext:1081;}
+.u-ext-1082{--ext:1082;}
+.u-ext-1083{--ext:1083;}
+.u-ext-1084{--ext:1084;}
+.u-ext-1085{--ext:1085;}
+.u-ext-1086{--ext:1086;}
+.u-ext-1087{--ext:1087;}
+.u-ext-1088{--ext:1088;}
+.u-ext-1089{--ext:1089;}
+.u-ext-1090{--ext:1090;}
+.u-ext-1091{--ext:1091;}
+.u-ext-1092{--ext:1092;}
+.u-ext-1093{--ext:1093;}
+.u-ext-1094{--ext:1094;}
+.u-ext-1095{--ext:1095;}
+.u-ext-1096{--ext:1096;}
+.u-ext-1097{--ext:1097;}
+.u-ext-1098{--ext:1098;}
+.u-ext-1099{--ext:1099;}
+.u-ext-1100{--ext:1100;}
+.u-ext-1101{--ext:1101;}
+.u-ext-1102{--ext:1102;}
+.u-ext-1103{--ext:1103;}
+.u-ext-1104{--ext:1104;}
+.u-ext-1105{--ext:1105;}
+.u-ext-1106{--ext:1106;}
+.u-ext-1107{--ext:1107;}
+.u-ext-1108{--ext:1108;}
+.u-ext-1109{--ext:1109;}
+.u-ext-1110{--ext:1110;}
+.u-ext-1111{--ext:1111;}
+.u-ext-1112{--ext:1112;}
+.u-ext-1113{--ext:1113;}
+.u-ext-1114{--ext:1114;}
+.u-ext-1115{--ext:1115;}
+.u-ext-1116{--ext:1116;}
+.u-ext-1117{--ext:1117;}
+.u-ext-1118{--ext:1118;}
+.u-ext-1119{--ext:1119;}
+.u-ext-1120{--ext:1120;}
+.u-ext-1121{--ext:1121;}
+.u-ext-1122{--ext:1122;}
+.u-ext-1123{--ext:1123;}
+.u-ext-1124{--ext:1124;}
+.u-ext-1125{--ext:1125;}
+.u-ext-1126{--ext:1126;}
+.u-ext-1127{--ext:1127;}
+.u-ext-1128{--ext:1128;}
+.u-ext-1129{--ext:1129;}
+.u-ext-1130{--ext:1130;}
+.u-ext-1131{--ext:1131;}
+.u-ext-1132{--ext:1132;}
+.u-ext-1133{--ext:1133;}
+.u-ext-1134{--ext:1134;}
+.u-ext-1135{--ext:1135;}
+.u-ext-1136{--ext:1136;}
+.u-ext-1137{--ext:1137;}
+.u-ext-1138{--ext:1138;}
+.u-ext-1139{--ext:1139;}
+.u-ext-1140{--ext:1140;}
+.u-ext-1141{--ext:1141;}
+.u-ext-1142{--ext:1142;}
+.u-ext-1143{--ext:1143;}
+.u-ext-1144{--ext:1144;}
+.u-ext-1145{--ext:1145;}
+.u-ext-1146{--ext:1146;}
+.u-ext-1147{--ext:1147;}
+.u-ext-1148{--ext:1148;}
+.u-ext-1149{--ext:1149;}
+.u-ext-1150{--ext:1150;}
+.u-ext-1151{--ext:1151;}
+.u-ext-1152{--ext:1152;}
+.u-ext-1153{--ext:1153;}
+.u-ext-1154{--ext:1154;}
+.u-ext-1155{--ext:1155;}
+.u-ext-1156{--ext:1156;}
+.u-ext-1157{--ext:1157;}
+.u-ext-1158{--ext:1158;}
+.u-ext-1159{--ext:1159;}
+.u-ext-1160{--ext:1160;}
+.u-ext-1161{--ext:1161;}
+.u-ext-1162{--ext:1162;}
+.u-ext-1163{--ext:1163;}
+.u-ext-1164{--ext:1164;}
+.u-ext-1165{--ext:1165;}
+.u-ext-1166{--ext:1166;}
+.u-ext-1167{--ext:1167;}
+.u-ext-1168{--ext:1168;}
+.u-ext-1169{--ext:1169;}
+.u-ext-1170{--ext:1170;}
+.u-ext-1171{--ext:1171;}
+.u-ext-1172{--ext:1172;}
+.u-ext-1173{--ext:1173;}
+.u-ext-1174{--ext:1174;}
+.u-ext-1175{--ext:1175;}
+.u-ext-1176{--ext:1176;}
+.u-ext-1177{--ext:1177;}
+.u-ext-1178{--ext:1178;}
+.u-ext-1179{--ext:1179;}
+.u-ext-1180{--ext:1180;}
+.u-ext-1181{--ext:1181;}
+.u-ext-1182{--ext:1182;}
+.u-ext-1183{--ext:1183;}
+.u-ext-1184{--ext:1184;}
+.u-ext-1185{--ext:1185;}
+.u-ext-1186{--ext:1186;}
+.u-ext-1187{--ext:1187;}
+.u-ext-1188{--ext:1188;}
+.u-ext-1189{--ext:1189;}
+.u-ext-1190{--ext:1190;}
+.u-ext-1191{--ext:1191;}
+.u-ext-1192{--ext:1192;}
+.u-ext-1193{--ext:1193;}
+.u-ext-1194{--ext:1194;}
+.u-ext-1195{--ext:1195;}
+.u-ext-1196{--ext:1196;}
+.u-ext-1197{--ext:1197;}
+.u-ext-1198{--ext:1198;}
+.u-ext-1199{--ext:1199;}
+.u-ext-1200{--ext:1200;}
+.u-ext-1201{--ext:1201;}
+.u-ext-1202{--ext:1202;}
+.u-ext-1203{--ext:1203;}
+.u-ext-1204{--ext:1204;}
+.u-ext-1205{--ext:1205;}
+.u-ext-1206{--ext:1206;}
+.u-ext-1207{--ext:1207;}
+.u-ext-1208{--ext:1208;}
+.u-ext-1209{--ext:1209;}
+.u-ext-1210{--ext:1210;}
+.u-ext-1211{--ext:1211;}
+.u-ext-1212{--ext:1212;}
+.u-ext-1213{--ext:1213;}
+.u-ext-1214{--ext:1214;}
+.u-ext-1215{--ext:1215;}
+.u-ext-1216{--ext:1216;}
+.u-ext-1217{--ext:1217;}
+.u-ext-1218{--ext:1218;}
+.u-ext-1219{--ext:1219;}
+.u-ext-1220{--ext:1220;}
+.u-ext-1221{--ext:1221;}
+.u-ext-1222{--ext:1222;}
+.u-ext-1223{--ext:1223;}
+.u-ext-1224{--ext:1224;}
+.u-ext-1225{--ext:1225;}
+.u-ext-1226{--ext:1226;}
+.u-ext-1227{--ext:1227;}
+.u-ext-1228{--ext:1228;}
+.u-ext-1229{--ext:1229;}
+.u-ext-1230{--ext:1230;}
+.u-ext-1231{--ext:1231;}
+.u-ext-1232{--ext:1232;}
+.u-ext-1233{--ext:1233;}
+.u-ext-1234{--ext:1234;}
+.u-ext-1235{--ext:1235;}
+.u-ext-1236{--ext:1236;}
+.u-ext-1237{--ext:1237;}
+.u-ext-1238{--ext:1238;}
+.u-ext-1239{--ext:1239;}
+.u-ext-1240{--ext:1240;}
+.u-ext-1241{--ext:1241;}
+.u-ext-1242{--ext:1242;}
+.u-ext-1243{--ext:1243;}
+.u-ext-1244{--ext:1244;}
+.u-ext-1245{--ext:1245;}
+.u-ext-1246{--ext:1246;}
+.u-ext-1247{--ext:1247;}
+.u-ext-1248{--ext:1248;}
+.u-ext-1249{--ext:1249;}
+.u-ext-1250{--ext:1250;}
+.u-ext-1251{--ext:1251;}
+.u-ext-1252{--ext:1252;}
+.u-ext-1253{--ext:1253;}
+.u-ext-1254{--ext:1254;}
+.u-ext-1255{--ext:1255;}
+.u-ext-1256{--ext:1256;}
+.u-ext-1257{--ext:1257;}
+.u-ext-1258{--ext:1258;}
+.u-ext-1259{--ext:1259;}
+.u-ext-1260{--ext:1260;}
+.u-ext-1261{--ext:1261;}
+.u-ext-1262{--ext:1262;}
+.u-ext-1263{--ext:1263;}
+.u-ext-1264{--ext:1264;}
+.u-ext-1265{--ext:1265;}
+.u-ext-1266{--ext:1266;}
+.u-ext-1267{--ext:1267;}
+.u-ext-1268{--ext:1268;}
+.u-ext-1269{--ext:1269;}
+.u-ext-1270{--ext:1270;}
+.u-ext-1271{--ext:1271;}
+.u-ext-1272{--ext:1272;}
+.u-ext-1273{--ext:1273;}
+.u-ext-1274{--ext:1274;}
+.u-ext-1275{--ext:1275;}
+.u-ext-1276{--ext:1276;}
+.u-ext-1277{--ext:1277;}
+.u-ext-1278{--ext:1278;}
+.u-ext-1279{--ext:1279;}
+.u-ext-1280{--ext:1280;}
+.u-ext-1281{--ext:1281;}
+.u-ext-1282{--ext:1282;}
+.u-ext-1283{--ext:1283;}
+.u-ext-1284{--ext:1284;}
+.u-ext-1285{--ext:1285;}
+.u-ext-1286{--ext:1286;}
+.u-ext-1287{--ext:1287;}
+.u-ext-1288{--ext:1288;}
+.u-ext-1289{--ext:1289;}
+.u-ext-1290{--ext:1290;}
+.u-ext-1291{--ext:1291;}
+.u-ext-1292{--ext:1292;}
+.u-ext-1293{--ext:1293;}
+.u-ext-1294{--ext:1294;}
+.u-ext-1295{--ext:1295;}
+.u-ext-1296{--ext:1296;}
+.u-ext-1297{--ext:1297;}
+.u-ext-1298{--ext:1298;}
+.u-ext-1299{--ext:1299;}
+.u-ext-1300{--ext:1300;}
+.u-ext-1301{--ext:1301;}
+.u-ext-1302{--ext:1302;}
+.u-ext-1303{--ext:1303;}
+.u-ext-1304{--ext:1304;}
+.u-ext-1305{--ext:1305;}
+.u-ext-1306{--ext:1306;}
+.u-ext-1307{--ext:1307;}
+.u-ext-1308{--ext:1308;}
+.u-ext-1309{--ext:1309;}
+.u-ext-1310{--ext:1310;}
+.u-ext-1311{--ext:1311;}
+.u-ext-1312{--ext:1312;}
+.u-ext-1313{--ext:1313;}
+.u-ext-1314{--ext:1314;}
+.u-ext-1315{--ext:1315;}
+.u-ext-1316{--ext:1316;}
+.u-ext-1317{--ext:1317;}
+.u-ext-1318{--ext:1318;}
+.u-ext-1319{--ext:1319;}
+.u-ext-1320{--ext:1320;}
+.u-ext-1321{--ext:1321;}
+.u-ext-1322{--ext:1322;}
+.u-ext-1323{--ext:1323;}
+.u-ext-1324{--ext:1324;}
+.u-ext-1325{--ext:1325;}
+.u-ext-1326{--ext:1326;}
+.u-ext-1327{--ext:1327;}
+.u-ext-1328{--ext:1328;}
+.u-ext-1329{--ext:1329;}
+.u-ext-1330{--ext:1330;}
+.u-ext-1331{--ext:1331;}
+.u-ext-1332{--ext:1332;}
+.u-ext-1333{--ext:1333;}
+.u-ext-1334{--ext:1334;}
+.u-ext-1335{--ext:1335;}
+.u-ext-1336{--ext:1336;}
+.u-ext-1337{--ext:1337;}
+.u-ext-1338{--ext:1338;}
+.u-ext-1339{--ext:1339;}
+.u-ext-1340{--ext:1340;}
+.u-ext-1341{--ext:1341;}
+.u-ext-1342{--ext:1342;}
+.u-ext-1343{--ext:1343;}
+.u-ext-1344{--ext:1344;}
+.u-ext-1345{--ext:1345;}
+.u-ext-1346{--ext:1346;}
+.u-ext-1347{--ext:1347;}
+.u-ext-1348{--ext:1348;}
+.u-ext-1349{--ext:1349;}
+.u-ext-1350{--ext:1350;}
+.u-ext-1351{--ext:1351;}
+.u-ext-1352{--ext:1352;}
+.u-ext-1353{--ext:1353;}
+.u-ext-1354{--ext:1354;}
+.u-ext-1355{--ext:1355;}
+.u-ext-1356{--ext:1356;}
+.u-ext-1357{--ext:1357;}
+.u-ext-1358{--ext:1358;}
+.u-ext-1359{--ext:1359;}
+.u-ext-1360{--ext:1360;}
+.u-ext-1361{--ext:1361;}
+.u-ext-1362{--ext:1362;}
+.u-ext-1363{--ext:1363;}
+.u-ext-1364{--ext:1364;}
+.u-ext-1365{--ext:1365;}
+.u-ext-1366{--ext:1366;}
+.u-ext-1367{--ext:1367;}
+.u-ext-1368{--ext:1368;}
+.u-ext-1369{--ext:1369;}
+.u-ext-1370{--ext:1370;}
+.u-ext-1371{--ext:1371;}
+.u-ext-1372{--ext:1372;}
+.u-ext-1373{--ext:1373;}
+.u-ext-1374{--ext:1374;}
+.u-ext-1375{--ext:1375;}
+.u-ext-1376{--ext:1376;}
+.u-ext-1377{--ext:1377;}
+.u-ext-1378{--ext:1378;}
+.u-ext-1379{--ext:1379;}
+.u-ext-1380{--ext:1380;}
+.u-ext-1381{--ext:1381;}
+.u-ext-1382{--ext:1382;}
+.u-ext-1383{--ext:1383;}
+.u-ext-1384{--ext:1384;}
+.u-ext-1385{--ext:1385;}
+.u-ext-1386{--ext:1386;}
+.u-ext-1387{--ext:1387;}
+.u-ext-1388{--ext:1388;}
+.u-ext-1389{--ext:1389;}
+.u-ext-1390{--ext:1390;}
+.u-ext-1391{--ext:1391;}
+.u-ext-1392{--ext:1392;}
+.u-ext-1393{--ext:1393;}
+.u-ext-1394{--ext:1394;}
+.u-ext-1395{--ext:1395;}
+.u-ext-1396{--ext:1396;}
+.u-ext-1397{--ext:1397;}
+.u-ext-1398{--ext:1398;}
+.u-ext-1399{--ext:1399;}
+.u-ext-1400{--ext:1400;}
+.u-ext-1401{--ext:1401;}
+.u-ext-1402{--ext:1402;}
+.u-ext-1403{--ext:1403;}
+.u-ext-1404{--ext:1404;}
+.u-ext-1405{--ext:1405;}
+.u-ext-1406{--ext:1406;}
+.u-ext-1407{--ext:1407;}
+.u-ext-1408{--ext:1408;}
+.u-ext-1409{--ext:1409;}
+.u-ext-1410{--ext:1410;}
+.u-ext-1411{--ext:1411;}
+.u-ext-1412{--ext:1412;}
+.u-ext-1413{--ext:1413;}
+.u-ext-1414{--ext:1414;}
+.u-ext-1415{--ext:1415;}
+.u-ext-1416{--ext:1416;}
+.u-ext-1417{--ext:1417;}
+.u-ext-1418{--ext:1418;}
+.u-ext-1419{--ext:1419;}
+.u-ext-1420{--ext:1420;}
+.u-ext-1421{--ext:1421;}
+.u-ext-1422{--ext:1422;}
+.u-ext-1423{--ext:1423;}
+.u-ext-1424{--ext:1424;}
+.u-ext-1425{--ext:1425;}
+.u-ext-1426{--ext:1426;}
+.u-ext-1427{--ext:1427;}
+.u-ext-1428{--ext:1428;}
+.u-ext-1429{--ext:1429;}
+.u-ext-1430{--ext:1430;}
+.u-ext-1431{--ext:1431;}
+.u-ext-1432{--ext:1432;}
+.u-ext-1433{--ext:1433;}
+.u-ext-1434{--ext:1434;}
+.u-ext-1435{--ext:1435;}
+.u-ext-1436{--ext:1436;}
+.u-ext-1437{--ext:1437;}
+.u-ext-1438{--ext:1438;}
+.u-ext-1439{--ext:1439;}
+.u-ext-1440{--ext:1440;}
+.u-ext-1441{--ext:1441;}
+.u-ext-1442{--ext:1442;}
+.u-ext-1443{--ext:1443;}
+.u-ext-1444{--ext:1444;}
+.u-ext-1445{--ext:1445;}
+.u-ext-1446{--ext:1446;}
+.u-ext-1447{--ext:1447;}
+.u-ext-1448{--ext:1448;}
+.u-ext-1449{--ext:1449;}
+.u-ext-1450{--ext:1450;}
+.u-ext-1451{--ext:1451;}
+.u-ext-1452{--ext:1452;}
+.u-ext-1453{--ext:1453;}
+.u-ext-1454{--ext:1454;}
+.u-ext-1455{--ext:1455;}
+.u-ext-1456{--ext:1456;}
+.u-ext-1457{--ext:1457;}
+.u-ext-1458{--ext:1458;}
+.u-ext-1459{--ext:1459;}
+.u-ext-1460{--ext:1460;}
+.u-ext-1461{--ext:1461;}
+.u-ext-1462{--ext:1462;}
+.u-ext-1463{--ext:1463;}
+.u-ext-1464{--ext:1464;}
+.u-ext-1465{--ext:1465;}
+.u-ext-1466{--ext:1466;}
+.u-ext-1467{--ext:1467;}
+.u-ext-1468{--ext:1468;}
+.u-ext-1469{--ext:1469;}
+.u-ext-1470{--ext:1470;}
+.u-ext-1471{--ext:1471;}
+.u-ext-1472{--ext:1472;}
+.u-ext-1473{--ext:1473;}
+.u-ext-1474{--ext:1474;}
+.u-ext-1475{--ext:1475;}
+.u-ext-1476{--ext:1476;}
+.u-ext-1477{--ext:1477;}
+.u-ext-1478{--ext:1478;}
+.u-ext-1479{--ext:1479;}
+.u-ext-1480{--ext:1480;}
+.u-ext-1481{--ext:1481;}
+.u-ext-1482{--ext:1482;}
+.u-ext-1483{--ext:1483;}
+.u-ext-1484{--ext:1484;}
+.u-ext-1485{--ext:1485;}
+.u-ext-1486{--ext:1486;}
+.u-ext-1487{--ext:1487;}
+.u-ext-1488{--ext:1488;}
+.u-ext-1489{--ext:1489;}
+.u-ext-1490{--ext:1490;}
+.u-ext-1491{--ext:1491;}
+.u-ext-1492{--ext:1492;}
+.u-ext-1493{--ext:1493;}
+.u-ext-1494{--ext:1494;}
+.u-ext-1495{--ext:1495;}
+.u-ext-1496{--ext:1496;}
+.u-ext-1497{--ext:1497;}
+.u-ext-1498{--ext:1498;}
+.u-ext-1499{--ext:1499;}
+.u-ext-1500{--ext:1500;}
+.u-ext-1501{--ext:1501;}
+.u-ext-1502{--ext:1502;}
+.u-ext-1503{--ext:1503;}
+.u-ext-1504{--ext:1504;}
+.u-ext-1505{--ext:1505;}
+.u-ext-1506{--ext:1506;}
+.u-ext-1507{--ext:1507;}
+.u-ext-1508{--ext:1508;}
+.u-ext-1509{--ext:1509;}
+.u-ext-1510{--ext:1510;}
+.u-ext-1511{--ext:1511;}
+.u-ext-1512{--ext:1512;}
+.u-ext-1513{--ext:1513;}
+.u-ext-1514{--ext:1514;}
+.u-ext-1515{--ext:1515;}
+.u-ext-1516{--ext:1516;}
+.u-ext-1517{--ext:1517;}
+.u-ext-1518{--ext:1518;}
+.u-ext-1519{--ext:1519;}
+.u-ext-1520{--ext:1520;}
+.u-ext-1521{--ext:1521;}
+.u-ext-1522{--ext:1522;}
+.u-ext-1523{--ext:1523;}
+.u-ext-1524{--ext:1524;}
+.u-ext-1525{--ext:1525;}
+.u-ext-1526{--ext:1526;}
+.u-ext-1527{--ext:1527;}
+.u-ext-1528{--ext:1528;}
+.u-ext-1529{--ext:1529;}
+.u-ext-1530{--ext:1530;}
+.u-ext-1531{--ext:1531;}
+.u-ext-1532{--ext:1532;}
+.u-ext-1533{--ext:1533;}
+.u-ext-1534{--ext:1534;}
+.u-ext-1535{--ext:1535;}
+.u-ext-1536{--ext:1536;}
+.u-ext-1537{--ext:1537;}
+.u-ext-1538{--ext:1538;}
+.u-ext-1539{--ext:1539;}
+.u-ext-1540{--ext:1540;}
+.u-ext-1541{--ext:1541;}
+.u-ext-1542{--ext:1542;}
+.u-ext-1543{--ext:1543;}
+.u-ext-1544{--ext:1544;}
+.u-ext-1545{--ext:1545;}
+.u-ext-1546{--ext:1546;}
+.u-ext-1547{--ext:1547;}
+.u-ext-1548{--ext:1548;}
+.u-ext-1549{--ext:1549;}
+.u-ext-1550{--ext:1550;}
+.u-ext-1551{--ext:1551;}
+.u-ext-1552{--ext:1552;}
+.u-ext-1553{--ext:1553;}
+.u-ext-1554{--ext:1554;}
+.u-ext-1555{--ext:1555;}
+.u-ext-1556{--ext:1556;}
+.u-ext-1557{--ext:1557;}
+.u-ext-1558{--ext:1558;}
+.u-ext-1559{--ext:1559;}
+.u-ext-1560{--ext:1560;}
+.u-ext-1561{--ext:1561;}
+.u-ext-1562{--ext:1562;}
+.u-ext-1563{--ext:1563;}
+.u-ext-1564{--ext:1564;}
+.u-ext-1565{--ext:1565;}
+.u-ext-1566{--ext:1566;}
+.u-ext-1567{--ext:1567;}
+.u-ext-1568{--ext:1568;}
+.u-ext-1569{--ext:1569;}
+.u-ext-1570{--ext:1570;}
+.u-ext-1571{--ext:1571;}
+.u-ext-1572{--ext:1572;}
+.u-ext-1573{--ext:1573;}
+.u-ext-1574{--ext:1574;}
+.u-ext-1575{--ext:1575;}
+.u-ext-1576{--ext:1576;}
+.u-ext-1577{--ext:1577;}
+.u-ext-1578{--ext:1578;}
+.u-ext-1579{--ext:1579;}
+.u-ext-1580{--ext:1580;}
+.u-ext-1581{--ext:1581;}
+.u-ext-1582{--ext:1582;}
+.u-ext-1583{--ext:1583;}
+.u-ext-1584{--ext:1584;}
+.u-ext-1585{--ext:1585;}
+.u-ext-1586{--ext:1586;}
+.u-ext-1587{--ext:1587;}
+.u-ext-1588{--ext:1588;}
+.u-ext-1589{--ext:1589;}
+.u-ext-1590{--ext:1590;}
+.u-ext-1591{--ext:1591;}
+.u-ext-1592{--ext:1592;}
+.u-ext-1593{--ext:1593;}
+.u-ext-1594{--ext:1594;}
+.u-ext-1595{--ext:1595;}
+.u-ext-1596{--ext:1596;}
+.u-ext-1597{--ext:1597;}
+.u-ext-1598{--ext:1598;}
+.u-ext-1599{--ext:1599;}
+.u-ext-1600{--ext:1600;}
+.u-ext-1601{--ext:1601;}
+.u-ext-1602{--ext:1602;}
+.u-ext-1603{--ext:1603;}
+.u-ext-1604{--ext:1604;}
+.u-ext-1605{--ext:1605;}
+.u-ext-1606{--ext:1606;}
+.u-ext-1607{--ext:1607;}
+.u-ext-1608{--ext:1608;}
+.u-ext-1609{--ext:1609;}
+.u-ext-1610{--ext:1610;}
+.u-ext-1611{--ext:1611;}
+.u-ext-1612{--ext:1612;}
+.u-ext-1613{--ext:1613;}
+.u-ext-1614{--ext:1614;}
+.u-ext-1615{--ext:1615;}
+.u-ext-1616{--ext:1616;}
+.u-ext-1617{--ext:1617;}
+.u-ext-1618{--ext:1618;}
+.u-ext-1619{--ext:1619;}
+.u-ext-1620{--ext:1620;}
+.u-ext-1621{--ext:1621;}
+.u-ext-1622{--ext:1622;}
+.u-ext-1623{--ext:1623;}
+.u-ext-1624{--ext:1624;}
+.u-ext-1625{--ext:1625;}
+.u-ext-1626{--ext:1626;}
+.u-ext-1627{--ext:1627;}
+.u-ext-1628{--ext:1628;}
+.u-ext-1629{--ext:1629;}
+.u-ext-1630{--ext:1630;}
+.u-ext-1631{--ext:1631;}
+.u-ext-1632{--ext:1632;}
+.u-ext-1633{--ext:1633;}
+.u-ext-1634{--ext:1634;}
+.u-ext-1635{--ext:1635;}
+.u-ext-1636{--ext:1636;}
+.u-ext-1637{--ext:1637;}
+.u-ext-1638{--ext:1638;}
+.u-ext-1639{--ext:1639;}
+.u-ext-1640{--ext:1640;}
+.u-ext-1641{--ext:1641;}
+.u-ext-1642{--ext:1642;}
+.u-ext-1643{--ext:1643;}
+.u-ext-1644{--ext:1644;}
+.u-ext-1645{--ext:1645;}
+.u-ext-1646{--ext:1646;}
+.u-ext-1647{--ext:1647;}
+.u-ext-1648{--ext:1648;}
+.u-ext-1649{--ext:1649;}
+.u-ext-1650{--ext:1650;}
+.u-ext-1651{--ext:1651;}
+.u-ext-1652{--ext:1652;}
+.u-ext-1653{--ext:1653;}
+.u-ext-1654{--ext:1654;}
+.u-ext-1655{--ext:1655;}
+.u-ext-1656{--ext:1656;}
+.u-ext-1657{--ext:1657;}
+.u-ext-1658{--ext:1658;}
+.u-ext-1659{--ext:1659;}
+.u-ext-1660{--ext:1660;}
+.u-ext-1661{--ext:1661;}
+.u-ext-1662{--ext:1662;}
+.u-ext-1663{--ext:1663;}
+.u-ext-1664{--ext:1664;}
+.u-ext-1665{--ext:1665;}
+.u-ext-1666{--ext:1666;}
+.u-ext-1667{--ext:1667;}
+.u-ext-1668{--ext:1668;}
+.u-ext-1669{--ext:1669;}
+.u-ext-1670{--ext:1670;}
+.u-ext-1671{--ext:1671;}
+.u-ext-1672{--ext:1672;}
+.u-ext-1673{--ext:1673;}
+.u-ext-1674{--ext:1674;}
+.u-ext-1675{--ext:1675;}
+.u-ext-1676{--ext:1676;}
+.u-ext-1677{--ext:1677;}
+.u-ext-1678{--ext:1678;}
+.u-ext-1679{--ext:1679;}
+.u-ext-1680{--ext:1680;}
+.u-ext-1681{--ext:1681;}
+.u-ext-1682{--ext:1682;}
+.u-ext-1683{--ext:1683;}
+.u-ext-1684{--ext:1684;}
+.u-ext-1685{--ext:1685;}
+.u-ext-1686{--ext:1686;}
+.u-ext-1687{--ext:1687;}
+.u-ext-1688{--ext:1688;}
+.u-ext-1689{--ext:1689;}
+.u-ext-1690{--ext:1690;}
+.u-ext-1691{--ext:1691;}
+.u-ext-1692{--ext:1692;}
+.u-ext-1693{--ext:1693;}
+.u-ext-1694{--ext:1694;}
+.u-ext-1695{--ext:1695;}
+.u-ext-1696{--ext:1696;}
+.u-ext-1697{--ext:1697;}
+.u-ext-1698{--ext:1698;}
+.u-ext-1699{--ext:1699;}
+.u-ext-1700{--ext:1700;}
+.u-ext-1701{--ext:1701;}
+.u-ext-1702{--ext:1702;}
+.u-ext-1703{--ext:1703;}
+.u-ext-1704{--ext:1704;}
+.u-ext-1705{--ext:1705;}
+.u-ext-1706{--ext:1706;}
+.u-ext-1707{--ext:1707;}
+.u-ext-1708{--ext:1708;}
+.u-ext-1709{--ext:1709;}
+.u-ext-1710{--ext:1710;}
+.u-ext-1711{--ext:1711;}
+.u-ext-1712{--ext:1712;}
+.u-ext-1713{--ext:1713;}
+.u-ext-1714{--ext:1714;}
+.u-ext-1715{--ext:1715;}
+.u-ext-1716{--ext:1716;}
+.u-ext-1717{--ext:1717;}
+.u-ext-1718{--ext:1718;}
+.u-ext-1719{--ext:1719;}
+.u-ext-1720{--ext:1720;}
+.u-ext-1721{--ext:1721;}
+.u-ext-1722{--ext:1722;}
+.u-ext-1723{--ext:1723;}
+.u-ext-1724{--ext:1724;}
+.u-ext-1725{--ext:1725;}
+.u-ext-1726{--ext:1726;}
+.u-ext-1727{--ext:1727;}
+.u-ext-1728{--ext:1728;}
+.u-ext-1729{--ext:1729;}
+.u-ext-1730{--ext:1730;}
+.u-ext-1731{--ext:1731;}
+.u-ext-1732{--ext:1732;}
+.u-ext-1733{--ext:1733;}
+.u-ext-1734{--ext:1734;}
+.u-ext-1735{--ext:1735;}
+.u-ext-1736{--ext:1736;}
+.u-ext-1737{--ext:1737;}
+.u-ext-1738{--ext:1738;}
+.u-ext-1739{--ext:1739;}
+.u-ext-1740{--ext:1740;}
+.u-ext-1741{--ext:1741;}
+.u-ext-1742{--ext:1742;}
+.u-ext-1743{--ext:1743;}
+.u-ext-1744{--ext:1744;}
+.u-ext-1745{--ext:1745;}
+.u-ext-1746{--ext:1746;}
+.u-ext-1747{--ext:1747;}
+.u-ext-1748{--ext:1748;}
+.u-ext-1749{--ext:1749;}
+.u-ext-1750{--ext:1750;}
+.u-ext-1751{--ext:1751;}
+.u-ext-1752{--ext:1752;}
+.u-ext-1753{--ext:1753;}
+.u-ext-1754{--ext:1754;}
+.u-ext-1755{--ext:1755;}
+.u-ext-1756{--ext:1756;}
+.u-ext-1757{--ext:1757;}
+.u-ext-1758{--ext:1758;}
+.u-ext-1759{--ext:1759;}
+.u-ext-1760{--ext:1760;}
+.u-ext-1761{--ext:1761;}
+.u-ext-1762{--ext:1762;}
+.u-ext-1763{--ext:1763;}
+.u-ext-1764{--ext:1764;}
+.u-ext-1765{--ext:1765;}
+.u-ext-1766{--ext:1766;}
+.u-ext-1767{--ext:1767;}
+.u-ext-1768{--ext:1768;}
+.u-ext-1769{--ext:1769;}
+.u-ext-1770{--ext:1770;}
+.u-ext-1771{--ext:1771;}
+.u-ext-1772{--ext:1772;}
+.u-ext-1773{--ext:1773;}
+.u-ext-1774{--ext:1774;}
+.u-ext-1775{--ext:1775;}
+.u-ext-1776{--ext:1776;}
+.u-ext-1777{--ext:1777;}
+.u-ext-1778{--ext:1778;}
+.u-ext-1779{--ext:1779;}
+.u-ext-1780{--ext:1780;}
+.u-ext-1781{--ext:1781;}
+.u-ext-1782{--ext:1782;}
+.u-ext-1783{--ext:1783;}
+.u-ext-1784{--ext:1784;}
+.u-ext-1785{--ext:1785;}
+.u-ext-1786{--ext:1786;}
+.u-ext-1787{--ext:1787;}
+.u-ext-1788{--ext:1788;}
+.u-ext-1789{--ext:1789;}
+.u-ext-1790{--ext:1790;}
+.u-ext-1791{--ext:1791;}
+.u-ext-1792{--ext:1792;}
+.u-ext-1793{--ext:1793;}
+.u-ext-1794{--ext:1794;}
+.u-ext-1795{--ext:1795;}
+.u-ext-1796{--ext:1796;}
+.u-ext-1797{--ext:1797;}
+.u-ext-1798{--ext:1798;}
+.u-ext-1799{--ext:1799;}
+.u-ext-1800{--ext:1800;}
+.u-ext-1801{--ext:1801;}
+.u-ext-1802{--ext:1802;}
+.u-ext-1803{--ext:1803;}
+.u-ext-1804{--ext:1804;}
+.u-ext-1805{--ext:1805;}
+.u-ext-1806{--ext:1806;}
+.u-ext-1807{--ext:1807;}
+.u-ext-1808{--ext:1808;}
+.u-ext-1809{--ext:1809;}
+.u-ext-1810{--ext:1810;}
+.u-ext-1811{--ext:1811;}
+.u-ext-1812{--ext:1812;}
+.u-ext-1813{--ext:1813;}
+.u-ext-1814{--ext:1814;}
+.u-ext-1815{--ext:1815;}
+.u-ext-1816{--ext:1816;}
+.u-ext-1817{--ext:1817;}
+.u-ext-1818{--ext:1818;}
+.u-ext-1819{--ext:1819;}
+.u-ext-1820{--ext:1820;}
+.u-ext-1821{--ext:1821;}
+.u-ext-1822{--ext:1822;}
+.u-ext-1823{--ext:1823;}
+.u-ext-1824{--ext:1824;}
+.u-ext-1825{--ext:1825;}
+.u-ext-1826{--ext:1826;}
+.u-ext-1827{--ext:1827;}
+.u-ext-1828{--ext:1828;}
+.u-ext-1829{--ext:1829;}
+.u-ext-1830{--ext:1830;}
+.u-ext-1831{--ext:1831;}
+.u-ext-1832{--ext:1832;}
+.u-ext-1833{--ext:1833;}
+.u-ext-1834{--ext:1834;}
+.u-ext-1835{--ext:1835;}
+.u-ext-1836{--ext:1836;}
+.u-ext-1837{--ext:1837;}
+.u-ext-1838{--ext:1838;}
+.u-ext-1839{--ext:1839;}
+.u-ext-1840{--ext:1840;}
+.u-ext-1841{--ext:1841;}
+.u-ext-1842{--ext:1842;}
+.u-ext-1843{--ext:1843;}
+.u-ext-1844{--ext:1844;}
+.u-ext-1845{--ext:1845;}
+.u-ext-1846{--ext:1846;}
+.u-ext-1847{--ext:1847;}
+.u-ext-1848{--ext:1848;}
+.u-ext-1849{--ext:1849;}
+.u-ext-1850{--ext:1850;}
+.u-ext-1851{--ext:1851;}
+.u-ext-1852{--ext:1852;}
+.u-ext-1853{--ext:1853;}
+.u-ext-1854{--ext:1854;}
+.u-ext-1855{--ext:1855;}
+.u-ext-1856{--ext:1856;}
+.u-ext-1857{--ext:1857;}
+.u-ext-1858{--ext:1858;}
+.u-ext-1859{--ext:1859;}
+.u-ext-1860{--ext:1860;}
+.u-ext-1861{--ext:1861;}
+.u-ext-1862{--ext:1862;}
+.u-ext-1863{--ext:1863;}
+.u-ext-1864{--ext:1864;}
+.u-ext-1865{--ext:1865;}
+.u-ext-1866{--ext:1866;}
+.u-ext-1867{--ext:1867;}
+.u-ext-1868{--ext:1868;}
+.u-ext-1869{--ext:1869;}
+.u-ext-1870{--ext:1870;}
+.u-ext-1871{--ext:1871;}
+.u-ext-1872{--ext:1872;}
+.u-ext-1873{--ext:1873;}
+.u-ext-1874{--ext:1874;}
+.u-ext-1875{--ext:1875;}
+.u-ext-1876{--ext:1876;}
+.u-ext-1877{--ext:1877;}
+.u-ext-1878{--ext:1878;}
+.u-ext-1879{--ext:1879;}
+.u-ext-1880{--ext:1880;}
+.u-ext-1881{--ext:1881;}
+.u-ext-1882{--ext:1882;}
+.u-ext-1883{--ext:1883;}
+.u-ext-1884{--ext:1884;}
+.u-ext-1885{--ext:1885;}
+.u-ext-1886{--ext:1886;}
+.u-ext-1887{--ext:1887;}
+.u-ext-1888{--ext:1888;}
+.u-ext-1889{--ext:1889;}
+.u-ext-1890{--ext:1890;}
+.u-ext-1891{--ext:1891;}
+.u-ext-1892{--ext:1892;}
+.u-ext-1893{--ext:1893;}
+.u-ext-1894{--ext:1894;}
+.u-ext-1895{--ext:1895;}
+.u-ext-1896{--ext:1896;}
+.u-ext-1897{--ext:1897;}
+.u-ext-1898{--ext:1898;}
+.u-ext-1899{--ext:1899;}
+.u-ext-1900{--ext:1900;}
+.u-ext-1901{--ext:1901;}
+.u-ext-1902{--ext:1902;}
+.u-ext-1903{--ext:1903;}
+.u-ext-1904{--ext:1904;}
+.u-ext-1905{--ext:1905;}
+.u-ext-1906{--ext:1906;}
+.u-ext-1907{--ext:1907;}
+.u-ext-1908{--ext:1908;}
+.u-ext-1909{--ext:1909;}
+.u-ext-1910{--ext:1910;}
+.u-ext-1911{--ext:1911;}
+.u-ext-1912{--ext:1912;}
+.u-ext-1913{--ext:1913;}
+.u-ext-1914{--ext:1914;}
+.u-ext-1915{--ext:1915;}
+.u-ext-1916{--ext:1916;}
+.u-ext-1917{--ext:1917;}
+.u-ext-1918{--ext:1918;}
+.u-ext-1919{--ext:1919;}
+.u-ext-1920{--ext:1920;}
+.u-ext-1921{--ext:1921;}
+.u-ext-1922{--ext:1922;}
+.u-ext-1923{--ext:1923;}
+.u-ext-1924{--ext:1924;}
+.u-ext-1925{--ext:1925;}
+.u-ext-1926{--ext:1926;}
+.u-ext-1927{--ext:1927;}
+.u-ext-1928{--ext:1928;}
+.u-ext-1929{--ext:1929;}
+.u-ext-1930{--ext:1930;}
+.u-ext-1931{--ext:1931;}
+.u-ext-1932{--ext:1932;}
+.u-ext-1933{--ext:1933;}
+.u-ext-1934{--ext:1934;}
+.u-ext-1935{--ext:1935;}
+.u-ext-1936{--ext:1936;}
+.u-ext-1937{--ext:1937;}
+.u-ext-1938{--ext:1938;}
+.u-ext-1939{--ext:1939;}
+.u-ext-1940{--ext:1940;}
+.u-ext-1941{--ext:1941;}
+.u-ext-1942{--ext:1942;}
+.u-ext-1943{--ext:1943;}
+.u-ext-1944{--ext:1944;}
+.u-ext-1945{--ext:1945;}
+.u-ext-1946{--ext:1946;}
+.u-ext-1947{--ext:1947;}
+.u-ext-1948{--ext:1948;}
+.u-ext-1949{--ext:1949;}
+.u-ext-1950{--ext:1950;}
+.u-ext-1951{--ext:1951;}
+.u-ext-1952{--ext:1952;}
+.u-ext-1953{--ext:1953;}
+.u-ext-1954{--ext:1954;}
+.u-ext-1955{--ext:1955;}
+.u-ext-1956{--ext:1956;}
+.u-ext-1957{--ext:1957;}
+.u-ext-1958{--ext:1958;}
+.u-ext-1959{--ext:1959;}
+.u-ext-1960{--ext:1960;}
+.u-ext-1961{--ext:1961;}
+.u-ext-1962{--ext:1962;}
+.u-ext-1963{--ext:1963;}
+.u-ext-1964{--ext:1964;}
+.u-ext-1965{--ext:1965;}
+.u-ext-1966{--ext:1966;}
+.u-ext-1967{--ext:1967;}
+.u-ext-1968{--ext:1968;}
+.u-ext-1969{--ext:1969;}
+.u-ext-1970{--ext:1970;}
+.u-ext-1971{--ext:1971;}
+.u-ext-1972{--ext:1972;}
+.u-ext-1973{--ext:1973;}
+.u-ext-1974{--ext:1974;}
+.u-ext-1975{--ext:1975;}
+.u-ext-1976{--ext:1976;}
+.u-ext-1977{--ext:1977;}
+.u-ext-1978{--ext:1978;}
+.u-ext-1979{--ext:1979;}
+.u-ext-1980{--ext:1980;}
+.u-ext-1981{--ext:1981;}
+.u-ext-1982{--ext:1982;}
+.u-ext-1983{--ext:1983;}
+.u-ext-1984{--ext:1984;}
+.u-ext-1985{--ext:1985;}
+.u-ext-1986{--ext:1986;}
+.u-ext-1987{--ext:1987;}
+.u-ext-1988{--ext:1988;}
+.u-ext-1989{--ext:1989;}
+.u-ext-1990{--ext:1990;}
+.u-ext-1991{--ext:1991;}
+.u-ext-1992{--ext:1992;}
+.u-ext-1993{--ext:1993;}
+.u-ext-1994{--ext:1994;}
+.u-ext-1995{--ext:1995;}
+.u-ext-1996{--ext:1996;}
+.u-ext-1997{--ext:1997;}
+.u-ext-1998{--ext:1998;}
+.u-ext-1999{--ext:1999;}
+.u-ext-2000{--ext:2000;}
+.u-ext-2001{--ext:2001;}
+.u-ext-2002{--ext:2002;}
+.u-ext-2003{--ext:2003;}
+.u-ext-2004{--ext:2004;}
+.u-ext-2005{--ext:2005;}
+.u-ext-2006{--ext:2006;}
+.u-ext-2007{--ext:2007;}
+.u-ext-2008{--ext:2008;}
+.u-ext-2009{--ext:2009;}
+.u-ext-2010{--ext:2010;}
+.u-ext-2011{--ext:2011;}
+.u-ext-2012{--ext:2012;}
+.u-ext-2013{--ext:2013;}
+.u-ext-2014{--ext:2014;}
+.u-ext-2015{--ext:2015;}
+.u-ext-2016{--ext:2016;}
+.u-ext-2017{--ext:2017;}
+.u-ext-2018{--ext:2018;}
+.u-ext-2019{--ext:2019;}
+.u-ext-2020{--ext:2020;}
+.u-ext-2021{--ext:2021;}
+.u-ext-2022{--ext:2022;}
+.u-ext-2023{--ext:2023;}
+.u-ext-2024{--ext:2024;}
+.u-ext-2025{--ext:2025;}
+.u-ext-2026{--ext:2026;}
+.u-ext-2027{--ext:2027;}
+.u-ext-2028{--ext:2028;}
+.u-ext-2029{--ext:2029;}
+.u-ext-2030{--ext:2030;}
+.u-ext-2031{--ext:2031;}
+.u-ext-2032{--ext:2032;}
+.u-ext-2033{--ext:2033;}
+.u-ext-2034{--ext:2034;}
+.u-ext-2035{--ext:2035;}
+.u-ext-2036{--ext:2036;}
+.u-ext-2037{--ext:2037;}
+.u-ext-2038{--ext:2038;}
+.u-ext-2039{--ext:2039;}
+.u-ext-2040{--ext:2040;}
+.u-ext-2041{--ext:2041;}
+.u-ext-2042{--ext:2042;}
+.u-ext-2043{--ext:2043;}
+.u-ext-2044{--ext:2044;}
+.u-ext-2045{--ext:2045;}
+.u-ext-2046{--ext:2046;}
+.u-ext-2047{--ext:2047;}
+.u-ext-2048{--ext:2048;}
+.u-ext-2049{--ext:2049;}
+.u-ext-2050{--ext:2050;}
+.u-ext-2051{--ext:2051;}
+.u-ext-2052{--ext:2052;}
+.u-ext-2053{--ext:2053;}
+.u-ext-2054{--ext:2054;}
+.u-ext-2055{--ext:2055;}
+.u-ext-2056{--ext:2056;}
+.u-ext-2057{--ext:2057;}
+.u-ext-2058{--ext:2058;}
+.u-ext-2059{--ext:2059;}
+.u-ext-2060{--ext:2060;}
+.u-ext-2061{--ext:2061;}
+.u-ext-2062{--ext:2062;}
+.u-ext-2063{--ext:2063;}
+.u-ext-2064{--ext:2064;}
+.u-ext-2065{--ext:2065;}
+.u-ext-2066{--ext:2066;}
+.u-ext-2067{--ext:2067;}
+.u-ext-2068{--ext:2068;}
+.u-ext-2069{--ext:2069;}
+.u-ext-2070{--ext:2070;}
+.u-ext-2071{--ext:2071;}
+.u-ext-2072{--ext:2072;}
+.u-ext-2073{--ext:2073;}
+.u-ext-2074{--ext:2074;}
+.u-ext-2075{--ext:2075;}
+.u-ext-2076{--ext:2076;}
+.u-ext-2077{--ext:2077;}
+.u-ext-2078{--ext:2078;}
+.u-ext-2079{--ext:2079;}
+.u-ext-2080{--ext:2080;}
+.u-ext-2081{--ext:2081;}
+.u-ext-2082{--ext:2082;}
+.u-ext-2083{--ext:2083;}
+.u-ext-2084{--ext:2084;}
+.u-ext-2085{--ext:2085;}
+.u-ext-2086{--ext:2086;}
+.u-ext-2087{--ext:2087;}
+.u-ext-2088{--ext:2088;}
+.u-ext-2089{--ext:2089;}
+.u-ext-2090{--ext:2090;}
+.u-ext-2091{--ext:2091;}
+.u-ext-2092{--ext:2092;}
+.u-ext-2093{--ext:2093;}
+.u-ext-2094{--ext:2094;}
+.u-ext-2095{--ext:2095;}
+.u-ext-2096{--ext:2096;}
+.u-ext-2097{--ext:2097;}
+.u-ext-2098{--ext:2098;}
+.u-ext-2099{--ext:2099;}
+.u-ext-2100{--ext:2100;}
+.u-ext-2101{--ext:2101;}
+.u-ext-2102{--ext:2102;}
+.u-ext-2103{--ext:2103;}
+.u-ext-2104{--ext:2104;}
+.u-ext-2105{--ext:2105;}
+.u-ext-2106{--ext:2106;}
+.u-ext-2107{--ext:2107;}
+.u-ext-2108{--ext:2108;}
+.u-ext-2109{--ext:2109;}
+.u-ext-2110{--ext:2110;}
+.u-ext-2111{--ext:2111;}
+.u-ext-2112{--ext:2112;}
+.u-ext-2113{--ext:2113;}
+.u-ext-2114{--ext:2114;}
+.u-ext-2115{--ext:2115;}
+.u-ext-2116{--ext:2116;}
+.u-ext-2117{--ext:2117;}
+.u-ext-2118{--ext:2118;}
+.u-ext-2119{--ext:2119;}
+.u-ext-2120{--ext:2120;}
+.u-ext-2121{--ext:2121;}
+.u-ext-2122{--ext:2122;}
+.u-ext-2123{--ext:2123;}
+.u-ext-2124{--ext:2124;}
+.u-ext-2125{--ext:2125;}
+.u-ext-2126{--ext:2126;}
+.u-ext-2127{--ext:2127;}
+.u-ext-2128{--ext:2128;}
+.u-ext-2129{--ext:2129;}
+.u-ext-2130{--ext:2130;}
+.u-ext-2131{--ext:2131;}
+.u-ext-2132{--ext:2132;}
+.u-ext-2133{--ext:2133;}
+.u-ext-2134{--ext:2134;}
+.u-ext-2135{--ext:2135;}
+.u-ext-2136{--ext:2136;}
+.u-ext-2137{--ext:2137;}
+.u-ext-2138{--ext:2138;}
+.u-ext-2139{--ext:2139;}
+.u-ext-2140{--ext:2140;}
+.u-ext-2141{--ext:2141;}
+.u-ext-2142{--ext:2142;}
+.u-ext-2143{--ext:2143;}
+.u-ext-2144{--ext:2144;}
+.u-ext-2145{--ext:2145;}
+.u-ext-2146{--ext:2146;}
+.u-ext-2147{--ext:2147;}
+.u-ext-2148{--ext:2148;}
+.u-ext-2149{--ext:2149;}
+.u-ext-2150{--ext:2150;}
+.u-ext-2151{--ext:2151;}
+.u-ext-2152{--ext:2152;}
+.u-ext-2153{--ext:2153;}
+.u-ext-2154{--ext:2154;}
+.u-ext-2155{--ext:2155;}
+.u-ext-2156{--ext:2156;}
+.u-ext-2157{--ext:2157;}
+.u-ext-2158{--ext:2158;}
+.u-ext-2159{--ext:2159;}
+.u-ext-2160{--ext:2160;}
+.u-ext-2161{--ext:2161;}
+.u-ext-2162{--ext:2162;}
+.u-ext-2163{--ext:2163;}
+.u-ext-2164{--ext:2164;}
+.u-ext-2165{--ext:2165;}
+.u-ext-2166{--ext:2166;}
+.u-ext-2167{--ext:2167;}
+.u-ext-2168{--ext:2168;}
+.u-ext-2169{--ext:2169;}
+.u-ext-2170{--ext:2170;}
+.u-ext-2171{--ext:2171;}
+.u-ext-2172{--ext:2172;}
+.u-ext-2173{--ext:2173;}
+.u-ext-2174{--ext:2174;}
+.u-ext-2175{--ext:2175;}
+.u-ext-2176{--ext:2176;}
+.u-ext-2177{--ext:2177;}
+.u-ext-2178{--ext:2178;}
+.u-ext-2179{--ext:2179;}
+.u-ext-2180{--ext:2180;}
+.u-ext-2181{--ext:2181;}
+.u-ext-2182{--ext:2182;}
+.u-ext-2183{--ext:2183;}
+.u-ext-2184{--ext:2184;}
+.u-ext-2185{--ext:2185;}
+.u-ext-2186{--ext:2186;}
+.u-ext-2187{--ext:2187;}
+.u-ext-2188{--ext:2188;}
+.u-ext-2189{--ext:2189;}
+.u-ext-2190{--ext:2190;}
+.u-ext-2191{--ext:2191;}
+.u-ext-2192{--ext:2192;}
+.u-ext-2193{--ext:2193;}
+.u-ext-2194{--ext:2194;}
+.u-ext-2195{--ext:2195;}
+.u-ext-2196{--ext:2196;}
+.u-ext-2197{--ext:2197;}
+.u-ext-2198{--ext:2198;}
+.u-ext-2199{--ext:2199;}
+.u-ext-2200{--ext:2200;}
+.u-ext-2201{--ext:2201;}
+.u-ext-2202{--ext:2202;}
+.u-ext-2203{--ext:2203;}
+.u-ext-2204{--ext:2204;}
+.u-ext-2205{--ext:2205;}
+.u-ext-2206{--ext:2206;}
+.u-ext-2207{--ext:2207;}
+.u-ext-2208{--ext:2208;}
+.u-ext-2209{--ext:2209;}
+.u-ext-2210{--ext:2210;}
+.u-ext-2211{--ext:2211;}
+.u-ext-2212{--ext:2212;}
+.u-ext-2213{--ext:2213;}
+.u-ext-2214{--ext:2214;}
+.u-ext-2215{--ext:2215;}
+.u-ext-2216{--ext:2216;}
+.u-ext-2217{--ext:2217;}
+.u-ext-2218{--ext:2218;}
+.u-ext-2219{--ext:2219;}
+.u-ext-2220{--ext:2220;}
+.u-ext-2221{--ext:2221;}
+.u-ext-2222{--ext:2222;}
+.u-ext-2223{--ext:2223;}
+.u-ext-2224{--ext:2224;}
+.u-ext-2225{--ext:2225;}
+.u-ext-2226{--ext:2226;}
+.u-ext-2227{--ext:2227;}
+.u-ext-2228{--ext:2228;}
+.u-ext-2229{--ext:2229;}
+.u-ext-2230{--ext:2230;}
+.u-ext-2231{--ext:2231;}
+.u-ext-2232{--ext:2232;}
+.u-ext-2233{--ext:2233;}
+.u-ext-2234{--ext:2234;}
+.u-ext-2235{--ext:2235;}
+.u-ext-2236{--ext:2236;}
+.u-ext-2237{--ext:2237;}
+.u-ext-2238{--ext:2238;}
+.u-ext-2239{--ext:2239;}
+.u-ext-2240{--ext:2240;}
+.u-ext-2241{--ext:2241;}
+.u-ext-2242{--ext:2242;}
+.u-ext-2243{--ext:2243;}
+.u-ext-2244{--ext:2244;}
+.u-ext-2245{--ext:2245;}
+.u-ext-2246{--ext:2246;}
+.u-ext-2247{--ext:2247;}
+.u-ext-2248{--ext:2248;}
+.u-ext-2249{--ext:2249;}
+.u-ext-2250{--ext:2250;}
+.u-ext-2251{--ext:2251;}
+.u-ext-2252{--ext:2252;}
+.u-ext-2253{--ext:2253;}
+.u-ext-2254{--ext:2254;}
+.u-ext-2255{--ext:2255;}
+.u-ext-2256{--ext:2256;}
+.u-ext-2257{--ext:2257;}
+.u-ext-2258{--ext:2258;}
+.u-ext-2259{--ext:2259;}
+.u-ext-2260{--ext:2260;}
+.u-ext-2261{--ext:2261;}
+.u-ext-2262{--ext:2262;}
+.u-ext-2263{--ext:2263;}
+.u-ext-2264{--ext:2264;}
+.u-ext-2265{--ext:2265;}
+.u-ext-2266{--ext:2266;}
+.u-ext-2267{--ext:2267;}
+.u-ext-2268{--ext:2268;}
+.u-ext-2269{--ext:2269;}
+.u-ext-2270{--ext:2270;}
+.u-ext-2271{--ext:2271;}
+.u-ext-2272{--ext:2272;}
+.u-ext-2273{--ext:2273;}
+.u-ext-2274{--ext:2274;}
+.u-ext-2275{--ext:2275;}
+.u-ext-2276{--ext:2276;}
+.u-ext-2277{--ext:2277;}
+.u-ext-2278{--ext:2278;}
+.u-ext-2279{--ext:2279;}
+.u-ext-2280{--ext:2280;}
+.u-ext-2281{--ext:2281;}
+.u-ext-2282{--ext:2282;}
+.u-ext-2283{--ext:2283;}
+.u-ext-2284{--ext:2284;}
+.u-ext-2285{--ext:2285;}
+.u-ext-2286{--ext:2286;}
+.u-ext-2287{--ext:2287;}
+.u-ext-2288{--ext:2288;}
+.u-ext-2289{--ext:2289;}
+.u-ext-2290{--ext:2290;}
+.u-ext-2291{--ext:2291;}
+.u-ext-2292{--ext:2292;}
+.u-ext-2293{--ext:2293;}
+.u-ext-2294{--ext:2294;}
+.u-ext-2295{--ext:2295;}
+.u-ext-2296{--ext:2296;}
+.u-ext-2297{--ext:2297;}
+.u-ext-2298{--ext:2298;}
+.u-ext-2299{--ext:2299;}
+.u-ext-2300{--ext:2300;}
+.u-ext-2301{--ext:2301;}
+.u-ext-2302{--ext:2302;}
+.u-ext-2303{--ext:2303;}
+.u-ext-2304{--ext:2304;}
+.u-ext-2305{--ext:2305;}
+.u-ext-2306{--ext:2306;}
+.u-ext-2307{--ext:2307;}
+.u-ext-2308{--ext:2308;}
+.u-ext-2309{--ext:2309;}
+.u-ext-2310{--ext:2310;}
+.u-ext-2311{--ext:2311;}
+.u-ext-2312{--ext:2312;}
+.u-ext-2313{--ext:2313;}
+.u-ext-2314{--ext:2314;}
+.u-ext-2315{--ext:2315;}
+.u-ext-2316{--ext:2316;}
+.u-ext-2317{--ext:2317;}
+.u-ext-2318{--ext:2318;}
+.u-ext-2319{--ext:2319;}
+.u-ext-2320{--ext:2320;}
+.u-ext-2321{--ext:2321;}
+.u-ext-2322{--ext:2322;}
+.u-ext-2323{--ext:2323;}
+.u-ext-2324{--ext:2324;}
+.u-ext-2325{--ext:2325;}
+.u-ext-2326{--ext:2326;}
+.u-ext-2327{--ext:2327;}
+.u-ext-2328{--ext:2328;}
+.u-ext-2329{--ext:2329;}
+.u-ext-2330{--ext:2330;}
+.u-ext-2331{--ext:2331;}
+.u-ext-2332{--ext:2332;}
+.u-ext-2333{--ext:2333;}
+.u-ext-2334{--ext:2334;}
+.u-ext-2335{--ext:2335;}
+.u-ext-2336{--ext:2336;}
+.u-ext-2337{--ext:2337;}
+.u-ext-2338{--ext:2338;}
+.u-ext-2339{--ext:2339;}
+.u-ext-2340{--ext:2340;}
+.u-ext-2341{--ext:2341;}
+.u-ext-2342{--ext:2342;}
+.u-ext-2343{--ext:2343;}
+.u-ext-2344{--ext:2344;}
+.u-ext-2345{--ext:2345;}
+.u-ext-2346{--ext:2346;}
+.u-ext-2347{--ext:2347;}
+.u-ext-2348{--ext:2348;}
+.u-ext-2349{--ext:2349;}
+.u-ext-2350{--ext:2350;}
+.u-ext-2351{--ext:2351;}
+.u-ext-2352{--ext:2352;}
+.u-ext-2353{--ext:2353;}
+.u-ext-2354{--ext:2354;}
+.u-ext-2355{--ext:2355;}
+.u-ext-2356{--ext:2356;}
+.u-ext-2357{--ext:2357;}
+.u-ext-2358{--ext:2358;}
+.u-ext-2359{--ext:2359;}
+.u-ext-2360{--ext:2360;}
+.u-ext-2361{--ext:2361;}
+.u-ext-2362{--ext:2362;}
+.u-ext-2363{--ext:2363;}
+.u-ext-2364{--ext:2364;}
+.u-ext-2365{--ext:2365;}
+.u-ext-2366{--ext:2366;}
+.u-ext-2367{--ext:2367;}
+.u-ext-2368{--ext:2368;}
+.u-ext-2369{--ext:2369;}
+.u-ext-2370{--ext:2370;}
+.u-ext-2371{--ext:2371;}
+.u-ext-2372{--ext:2372;}
+.u-ext-2373{--ext:2373;}
+.u-ext-2374{--ext:2374;}
+.u-ext-2375{--ext:2375;}
+.u-ext-2376{--ext:2376;}
+.u-ext-2377{--ext:2377;}
+.u-ext-2378{--ext:2378;}
+.u-ext-2379{--ext:2379;}
+.u-ext-2380{--ext:2380;}
+.u-ext-2381{--ext:2381;}
+.u-ext-2382{--ext:2382;}
+.u-ext-2383{--ext:2383;}
+.u-ext-2384{--ext:2384;}
+.u-ext-2385{--ext:2385;}
+.u-ext-2386{--ext:2386;}
+.u-ext-2387{--ext:2387;}
+.u-ext-2388{--ext:2388;}
+.u-ext-2389{--ext:2389;}
+.u-ext-2390{--ext:2390;}
+.u-ext-2391{--ext:2391;}
+.u-ext-2392{--ext:2392;}
+.u-ext-2393{--ext:2393;}
+.u-ext-2394{--ext:2394;}
+.u-ext-2395{--ext:2395;}
+.u-ext-2396{--ext:2396;}
+.u-ext-2397{--ext:2397;}
+.u-ext-2398{--ext:2398;}
+.u-ext-2399{--ext:2399;}
+.u-ext-2400{--ext:2400;}
+.u-ext-2401{--ext:2401;}
+.u-ext-2402{--ext:2402;}
+.u-ext-2403{--ext:2403;}
+.u-ext-2404{--ext:2404;}
+.u-ext-2405{--ext:2405;}
+.u-ext-2406{--ext:2406;}
+.u-ext-2407{--ext:2407;}
+.u-ext-2408{--ext:2408;}
+.u-ext-2409{--ext:2409;}
+.u-ext-2410{--ext:2410;}
+.u-ext-2411{--ext:2411;}
+.u-ext-2412{--ext:2412;}
+.u-ext-2413{--ext:2413;}
+.u-ext-2414{--ext:2414;}
+.u-ext-2415{--ext:2415;}
+.u-ext-2416{--ext:2416;}
+.u-ext-2417{--ext:2417;}
+.u-ext-2418{--ext:2418;}
+.u-ext-2419{--ext:2419;}
+.u-ext-2420{--ext:2420;}
+.u-ext-2421{--ext:2421;}
+.u-ext-2422{--ext:2422;}
+.u-ext-2423{--ext:2423;}
+.u-ext-2424{--ext:2424;}
+.u-ext-2425{--ext:2425;}
+.u-ext-2426{--ext:2426;}
+.u-ext-2427{--ext:2427;}
+.u-ext-2428{--ext:2428;}
+.u-ext-2429{--ext:2429;}
+.u-ext-2430{--ext:2430;}
+.u-ext-2431{--ext:2431;}
+.u-ext-2432{--ext:2432;}
+.u-ext-2433{--ext:2433;}
+.u-ext-2434{--ext:2434;}
+.u-ext-2435{--ext:2435;}
+.u-ext-2436{--ext:2436;}
+.u-ext-2437{--ext:2437;}
+.u-ext-2438{--ext:2438;}
+.u-ext-2439{--ext:2439;}
+.u-ext-2440{--ext:2440;}
+.u-ext-2441{--ext:2441;}
+.u-ext-2442{--ext:2442;}
+.u-ext-2443{--ext:2443;}
+.u-ext-2444{--ext:2444;}
+.u-ext-2445{--ext:2445;}
+.u-ext-2446{--ext:2446;}
+.u-ext-2447{--ext:2447;}
+.u-ext-2448{--ext:2448;}
+.u-ext-2449{--ext:2449;}
+.u-ext-2450{--ext:2450;}
+.u-ext-2451{--ext:2451;}
+.u-ext-2452{--ext:2452;}
+.u-ext-2453{--ext:2453;}
+.u-ext-2454{--ext:2454;}
+.u-ext-2455{--ext:2455;}
+.u-ext-2456{--ext:2456;}
+.u-ext-2457{--ext:2457;}
+.u-ext-2458{--ext:2458;}
+.u-ext-2459{--ext:2459;}
+.u-ext-2460{--ext:2460;}
+.u-ext-2461{--ext:2461;}
+.u-ext-2462{--ext:2462;}
+.u-ext-2463{--ext:2463;}
+.u-ext-2464{--ext:2464;}
+.u-ext-2465{--ext:2465;}
+.u-ext-2466{--ext:2466;}
+.u-ext-2467{--ext:2467;}
+.u-ext-2468{--ext:2468;}
+.u-ext-2469{--ext:2469;}
+.u-ext-2470{--ext:2470;}
+.u-ext-2471{--ext:2471;}
+.u-ext-2472{--ext:2472;}
+.u-ext-2473{--ext:2473;}
+.u-ext-2474{--ext:2474;}
+.u-ext-2475{--ext:2475;}
+.u-ext-2476{--ext:2476;}
+.u-ext-2477{--ext:2477;}
+.u-ext-2478{--ext:2478;}
+.u-ext-2479{--ext:2479;}
+.u-ext-2480{--ext:2480;}
+.u-ext-2481{--ext:2481;}
+.u-ext-2482{--ext:2482;}
+.u-ext-2483{--ext:2483;}
+.u-ext-2484{--ext:2484;}
+.u-ext-2485{--ext:2485;}
+.u-ext-2486{--ext:2486;}
+.u-ext-2487{--ext:2487;}
+.u-ext-2488{--ext:2488;}
+.u-ext-2489{--ext:2489;}
+.u-ext-2490{--ext:2490;}
+.u-ext-2491{--ext:2491;}
+.u-ext-2492{--ext:2492;}
+.u-ext-2493{--ext:2493;}
+.u-ext-2494{--ext:2494;}
+.u-ext-2495{--ext:2495;}
+.u-ext-2496{--ext:2496;}
+.u-ext-2497{--ext:2497;}
+.u-ext-2498{--ext:2498;}
+.u-ext-2499{--ext:2499;}
+.u-ext-2500{--ext:2500;}
+.u-ext-2501{--ext:2501;}
+.u-ext-2502{--ext:2502;}
+.u-ext-2503{--ext:2503;}
+.u-ext-2504{--ext:2504;}
+.u-ext-2505{--ext:2505;}
+.u-ext-2506{--ext:2506;}
+.u-ext-2507{--ext:2507;}
+.u-ext-2508{--ext:2508;}
+.u-ext-2509{--ext:2509;}
+.u-ext-2510{--ext:2510;}
+.u-ext-2511{--ext:2511;}
+.u-ext-2512{--ext:2512;}
+.u-ext-2513{--ext:2513;}
+.u-ext-2514{--ext:2514;}
+.u-ext-2515{--ext:2515;}
+.u-ext-2516{--ext:2516;}
+.u-ext-2517{--ext:2517;}
+.u-ext-2518{--ext:2518;}
+.u-ext-2519{--ext:2519;}
+.u-ext-2520{--ext:2520;}
+.u-ext-2521{--ext:2521;}
+.u-ext-2522{--ext:2522;}
+.u-ext-2523{--ext:2523;}
+.u-ext-2524{--ext:2524;}
+.u-ext-2525{--ext:2525;}
+.u-ext-2526{--ext:2526;}
+.u-ext-2527{--ext:2527;}
+.u-ext-2528{--ext:2528;}
+.u-ext-2529{--ext:2529;}
+.u-ext-2530{--ext:2530;}
+.u-ext-2531{--ext:2531;}
+.u-ext-2532{--ext:2532;}
+.u-ext-2533{--ext:2533;}
+.u-ext-2534{--ext:2534;}
+.u-ext-2535{--ext:2535;}
+.u-ext-2536{--ext:2536;}
+.u-ext-2537{--ext:2537;}
+.u-ext-2538{--ext:2538;}
+.u-ext-2539{--ext:2539;}
+.u-ext-2540{--ext:2540;}
+.u-ext-2541{--ext:2541;}
+.u-ext-2542{--ext:2542;}
+.u-ext-2543{--ext:2543;}
+.u-ext-2544{--ext:2544;}
+.u-ext-2545{--ext:2545;}
+.u-ext-2546{--ext:2546;}
+.u-ext-2547{--ext:2547;}
+.u-ext-2548{--ext:2548;}
+.u-ext-2549{--ext:2549;}
+.u-ext-2550{--ext:2550;}
+.u-ext-2551{--ext:2551;}
+.u-ext-2552{--ext:2552;}
+.u-ext-2553{--ext:2553;}
+.u-ext-2554{--ext:2554;}
+.u-ext-2555{--ext:2555;}
+.u-ext-2556{--ext:2556;}
+.u-ext-2557{--ext:2557;}
+.u-ext-2558{--ext:2558;}
+.u-ext-2559{--ext:2559;}
+.u-ext-2560{--ext:2560;}
+.u-ext-2561{--ext:2561;}
+.u-ext-2562{--ext:2562;}
+.u-ext-2563{--ext:2563;}
+.u-ext-2564{--ext:2564;}
+.u-ext-2565{--ext:2565;}
+.u-ext-2566{--ext:2566;}
+.u-ext-2567{--ext:2567;}
+.u-ext-2568{--ext:2568;}
+.u-ext-2569{--ext:2569;}
+.u-ext-2570{--ext:2570;}
+.u-ext-2571{--ext:2571;}
+.u-ext-2572{--ext:2572;}
+.u-ext-2573{--ext:2573;}
+.u-ext-2574{--ext:2574;}
+.u-ext-2575{--ext:2575;}
+.u-ext-2576{--ext:2576;}
+.u-ext-2577{--ext:2577;}
+.u-ext-2578{--ext:2578;}
+.u-ext-2579{--ext:2579;}
+.u-ext-2580{--ext:2580;}
+.u-ext-2581{--ext:2581;}
+.u-ext-2582{--ext:2582;}
+.u-ext-2583{--ext:2583;}
+.u-ext-2584{--ext:2584;}
+.u-ext-2585{--ext:2585;}
+.u-ext-2586{--ext:2586;}
+.u-ext-2587{--ext:2587;}
+.u-ext-2588{--ext:2588;}
+.u-ext-2589{--ext:2589;}
+.u-ext-2590{--ext:2590;}
+.u-ext-2591{--ext:2591;}
+.u-ext-2592{--ext:2592;}
+.u-ext-2593{--ext:2593;}
+.u-ext-2594{--ext:2594;}
+.u-ext-2595{--ext:2595;}
+.u-ext-2596{--ext:2596;}
+.u-ext-2597{--ext:2597;}
+.u-ext-2598{--ext:2598;}
+.u-ext-2599{--ext:2599;}
+.u-ext-2600{--ext:2600;}
