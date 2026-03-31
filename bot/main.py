@@ -23,7 +23,7 @@ PAYMENT_TEXT = os.getenv(
 ).strip()
 SUPPORT_TEXT = os.getenv("SUPPORT_TEXT", "@pearvpn_support").strip()
 BOT_NAME = os.getenv("BOT_NAME", "Pear VPN").strip()
-PUBLIC_SUB_BASE = os.getenv("PUBLIC_SUB_BASE", "https://pearvpn.ru").strip().rstrip("/")
+PUBLIC_SUB_BASE = os.getenv("PUBLIC_SUB_BASE", "https://sub.pearvpn.ru").strip().rstrip("/")
 
 if not TOKEN:
     raise RuntimeError("TELEGRAM_BOT_TOKEN is required")

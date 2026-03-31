@@ -43,7 +43,7 @@ const SETTINGS_PATH = process.env.SETTINGS_PATH ?? path.join(process.cwd(), 'dat
 function normalizeSubBaseUrl(raw: string | undefined, fallbackPort: number): string {
   const source = (raw ?? '').trim()
   const publicIp = (process.env.PUBLIC_IP ?? '').trim()
-  let value = source || 'https://pearvpn.ru'
+  let value = source || 'https://sub.pearvpn.ru'
   if (!source && publicIp && !process.env.FORCE_DOMAIN_SUB_URL) {
     value = `http://${publicIp}:${fallbackPort}`
   }

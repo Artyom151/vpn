@@ -9,7 +9,9 @@ LOG_DIR="/var/log/remaware"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/install.log"
 DOMAIN="${DOMAIN:-pearvpn.ru}"
+SUB_DOMAIN="${SUB_DOMAIN:-sub.$DOMAIN}"
 PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-https://$DOMAIN}"
+SUB_BASE_URL="${SUB_BASE_URL:-https://$SUB_DOMAIN}"
 MANAGE_NGINX="${MANAGE_NGINX:-0}"
 
 # ===== CONFIG =====
@@ -232,7 +234,7 @@ pkill -f "node .*backend/dist/index.js" >/dev/null 2>&1 || true
 pkill -f "vite preview" >/dev/null 2>&1 || true
 
 run_step "Запуск backend" bash -c "
-nohup env PUBLIC_IP='$IP' SUB_BASE_URL='$PUBLIC_BASE_URL' FORCE_DOMAIN_SUB_URL='1' \
+nohup env PUBLIC_IP='$IP' SUB_BASE_URL='$SUB_BASE_URL' FORCE_DOMAIN_SUB_URL='1' XRAY_API_SERVER='127.0.0.1:10085' \
 npm --prefix '$ROOT_DIR/backend' run start >> '$LOG_DIR/backend.log' 2>&1 &
 "
 
@@ -254,22 +256,12 @@ fi
 
 # ===== NGINX PROXY (PANEL + API + SUB) =====
 if [ "$MANAGE_NGINX" = "1" ]; then
-run_step "Настройка nginx (site/api)" bash -c "
+run_step "Настройка nginx (subdomain for subscriptions)" bash -c "
 cat > /etc/nginx/sites-available/pearvpn-sub.conf <<EOF
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name ${DOMAIN} www.${DOMAIN} _;
-
-    location / {
-        proxy_pass http://127.0.0.1:4173;
-        proxy_http_version 1.1;
-        proxy_set_header Host \$host;
-        proxy_set_header Connection \"\";
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
+    listen 80;
+    listen [::]:80;
+    server_name ${SUB_DOMAIN};
 
     location /api/ {
         rewrite ^/api/api/(.*)$ /api/\$1 break;
@@ -282,7 +274,7 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
-    location /api/sub/ {
+    location /sub/ {
         proxy_pass http://127.0.0.1:5174;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
@@ -291,9 +283,13 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
+
+    location / {
+        return 200 'pearvpn subscription endpoint: use /sub/<token>\n';
+        add_header Content-Type text/plain;
+    }
 }
 EOF
-rm -f /etc/nginx/sites-enabled/default
 ln -sf /etc/nginx/sites-available/pearvpn-sub.conf /etc/nginx/sites-enabled/pearvpn-sub.conf
 nginx -t
 systemctl restart nginx
@@ -322,7 +318,7 @@ if [ -f "$ROOT_DIR/bot/main.py" ] && [ -f "$ROOT_DIR/bot/.env" ] && [ -x "$ROOT_
   set -a
   . '$ROOT_DIR/bot/.env'
   set +a
-  nohup env PEAR_API_URL='http://127.0.0.1:5174' PUBLIC_SUB_BASE='$PUBLIC_BASE_URL' '$ROOT_DIR/bot/.venv/bin/python' '$ROOT_DIR/bot/main.py' >> '$LOG_DIR/bot.log' 2>&1 &
+  nohup env PEAR_API_URL='http://127.0.0.1:5174' PUBLIC_SUB_BASE='$SUB_BASE_URL' '$ROOT_DIR/bot/.venv/bin/python' '$ROOT_DIR/bot/main.py' >> '$LOG_DIR/bot.log' 2>&1 &
   "
 elif [ -f "$ROOT_DIR/bot/main.py" ]; then
   echo "[!] bot найден, но не запущен (нужен bot/.env и bot/.venv/bin/python)"
@@ -345,10 +341,10 @@ echo "$PUBLIC_BASE_URL/"
 echo ""
 
 echo "🔧 Backend API:"
-echo "$PUBLIC_BASE_URL/api/health"
+echo "http://127.0.0.1:5174/api/health"
 echo ""
 echo "🔗 Subscription (через nginx):"
-echo "$PUBLIC_BASE_URL/sub/<TOKEN>"
+echo "$SUB_BASE_URL/sub/<TOKEN>"
 echo ""
 
 echo "🔐 VLESS:"
