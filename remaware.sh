@@ -10,6 +10,7 @@ mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/install.log"
 DOMAIN="${DOMAIN:-pearvpn.ru}"
 PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-https://$DOMAIN}"
+MANAGE_NGINX="${MANAGE_NGINX:-0}"
 
 # ===== CONFIG =====
 export DEBIAN_FRONTEND=noninteractive
@@ -102,7 +103,33 @@ run_step "Создание конфигурации Xray" bash -c "
 cat > /usr/local/etc/xray/config.json <<EOF
 {
   \"log\": { \"loglevel\": \"debug\" },
+  \"api\": {
+    \"tag\": \"api\",
+    \"services\": [\"StatsService\"]
+  },
+  \"stats\": {},
+  \"policy\": {
+    \"levels\": {
+      \"0\": {
+        \"statsUserUplink\": true,
+        \"statsUserDownlink\": true
+      }
+    },
+    \"system\": {
+      \"statsInboundUplink\": true,
+      \"statsInboundDownlink\": true,
+      \"statsOutboundUplink\": true,
+      \"statsOutboundDownlink\": true
+    }
+  },
   \"inbounds\": [
+    {
+      \"listen\": \"127.0.0.1\",
+      \"port\": 10085,
+      \"protocol\": \"dokodemo-door\",
+      \"settings\": { \"address\": \"127.0.0.1\" },
+      \"tag\": \"api\"
+    },
     {
       \"listen\": \"0.0.0.0\",
       \"port\": ${PORT},
@@ -111,7 +138,8 @@ cat > /usr/local/etc/xray/config.json <<EOF
         \"clients\": [
           {
             \"id\": \"${UUID}\",
-            \"flow\": \"xtls-rprx-vision\"
+            \"flow\": \"xtls-rprx-vision\",
+            \"email\": \"bootstrap_user\"
           }
         ],
         \"decryption\": \"none\"
@@ -131,9 +159,23 @@ cat > /usr/local/etc/xray/config.json <<EOF
   \"outbounds\": [
     {
       \"protocol\": \"freedom\",
+      \"tag\": \"api\",
+      \"settings\": {}
+    },
+    {
+      \"protocol\": \"freedom\",
       \"settings\": {}
     }
-  ]
+  ],
+  \"routing\": {
+    \"rules\": [
+      {
+        \"type\": \"field\",
+        \"inboundTag\": [\"api\"],
+        \"outboundTag\": \"api\"
+      }
+    ]
+  }
 }
 EOF
 "
@@ -157,11 +199,16 @@ if ! systemctl is-active --quiet xray; then
 fi
 
 # ===== NODE PROJECT =====
+WEB_DIR="$ROOT_DIR/website"
+if [ ! -d "$WEB_DIR" ]; then
+  WEB_DIR="$ROOT_DIR/frontend"
+fi
+
 run_step "npm install backend" npm install --prefix "$ROOT_DIR/backend"
-run_step "npm install frontend" npm install --prefix "$ROOT_DIR/frontend"
+run_step "npm install web" npm install --prefix "$WEB_DIR"
 
 run_step "build backend" npm --prefix "$ROOT_DIR/backend" run build
-run_step "build frontend" bash -c "VITE_API_URL='$PUBLIC_BASE_URL' npm --prefix '$ROOT_DIR/frontend' run build"
+run_step "build web" bash -c "VITE_API_URL='$PUBLIC_BASE_URL' npm --prefix '$WEB_DIR' run build"
 
 # ===== TELEGRAM BOT (PYTHON) =====
 if [ -f "$ROOT_DIR/bot/main.py" ]; then
@@ -206,7 +253,8 @@ if ! curl -fsS http://127.0.0.1:5174/api/health >/dev/null 2>&1; then
 fi
 
 # ===== NGINX PROXY (PANEL + API + SUB) =====
-run_step "Настройка nginx (panel/api/sub)" bash -c "
+if [ "$MANAGE_NGINX" = "1" ]; then
+run_step "Настройка nginx (site/api)" bash -c "
 cat > /etc/nginx/sites-available/pearvpn-sub.conf <<EOF
 server {
     listen 80 default_server;
@@ -217,7 +265,7 @@ server {
         proxy_pass http://127.0.0.1:4173;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
-        proxy_set_header Connection '';
+        proxy_set_header Connection \"\";
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
@@ -228,17 +276,7 @@ server {
         proxy_pass http://127.0.0.1:5174;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
-        proxy_set_header Connection '';
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-
-    location /sub/ {
-        proxy_pass http://127.0.0.1:5174;
-        proxy_http_version 1.1;
-        proxy_set_header Host \$host;
-        proxy_set_header Connection '';
+        proxy_set_header Connection \"\";
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
@@ -248,7 +286,7 @@ server {
         proxy_pass http://127.0.0.1:5174;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
-        proxy_set_header Connection '';
+        proxy_set_header Connection \"\";
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
@@ -260,19 +298,24 @@ ln -sf /etc/nginx/sites-available/pearvpn-sub.conf /etc/nginx/sites-enabled/pear
 nginx -t
 systemctl restart nginx
 "
+else
+  echo "[i] MANAGE_NGINX=0: пропускаем изменение nginx (ваш текущий сайт на домене не трогаем)"
+fi
 
-run_step "Запуск frontend" bash -c "
-nohup npm --prefix '$ROOT_DIR/frontend' run preview -- --host 0.0.0.0 --port 4173 >> '$LOG_DIR/frontend.log' 2>&1 &
+run_step "Запуск web (local)" bash -c "
+nohup npm --prefix '$WEB_DIR' run preview -- --host 127.0.0.1 --port 4173 >> '$LOG_DIR/frontend.log' 2>&1 &
 "
 
-echo "[*] Проверка nginx endpoint..."
-for i in {1..20}; do
-  if curl -fsS "http://127.0.0.1/api/health" >/dev/null 2>&1; then
-    echo "[✓] Nginx proxy /api работает"
-    break
-  fi
-  sleep 1
-done
+if [ "$MANAGE_NGINX" = "1" ]; then
+  echo "[*] Проверка nginx endpoint..."
+  for i in {1..20}; do
+    if curl -fsS "http://127.0.0.1/api/health" >/dev/null 2>&1; then
+      echo "[✓] Nginx proxy /api работает"
+      break
+    fi
+    sleep 1
+  done
+fi
 
 if [ -f "$ROOT_DIR/bot/main.py" ] && [ -f "$ROOT_DIR/bot/.env" ] && [ -x "$ROOT_DIR/bot/.venv/bin/python" ]; then
   run_step "Запуск telegram bot" bash -c "
@@ -297,7 +340,7 @@ echo "[✓] УСТАНОВКА ЗАВЕРШЕНА"
 echo "========================================="
 echo ""
 
-echo "🌐 Панель:"
+echo "🌐 Сайт:"
 echo "$PUBLIC_BASE_URL/"
 echo ""
 

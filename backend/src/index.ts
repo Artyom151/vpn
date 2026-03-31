@@ -36,6 +36,7 @@ const app = express()
 const PORT = Number(process.env.PORT ?? 5174)
 const HOST = process.env.HOST ?? '0.0.0.0'
 const XRAY_CONFIG_PATH = process.env.XRAY_CONFIG_PATH ?? '/usr/local/etc/xray/config.json'
+const XRAY_API_SERVER = process.env.XRAY_API_SERVER ?? '127.0.0.1:10085'
 const LOG_DIR = process.env.NODE_LOG_DIR ?? '/var/log/remaware'
 const DB_PATH = process.env.DB_PATH ?? path.join(process.cwd(), 'data', 'users.json')
 const SETTINGS_PATH = process.env.SETTINGS_PATH ?? path.join(process.cwd(), 'data', 'settings.json')
@@ -306,7 +307,7 @@ function syncXrayClients(users: VpnUser[]): { synced: boolean; message: string }
 
   inbound.settings.clients = users
     .filter((u) => computeUserStatus(u) === 'active')
-    .map((user) => ({ id: user.uuid, flow: user.flow }))
+    .map((user) => ({ id: user.uuid, flow: user.flow, email: user.username }))
 
   const ok = saveXray(config)
   if (!ok) return { synced: false, message: 'failed to write xray config' }
@@ -323,6 +324,48 @@ function syncXrayClients(users: VpnUser[]): { synced: boolean; message: string }
   }
 
   return { synced: true, message: `synced ${inbound.settings.clients.length} active users and restarted xray` }
+}
+
+function queryXrayUserTrafficBytes(username: string): number | null {
+  const norm = username.trim()
+  if (!norm) return null
+  const escaped = norm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const run = spawnSync(
+    'xray',
+    ['api', 'statsquery', '--server', XRAY_API_SERVER, '-name', `user>>>${norm}>>>traffic>>>`],
+    { encoding: 'utf8' },
+  )
+  const out = `${run.stdout ?? ''}\n${run.stderr ?? ''}`
+  if (run.status !== 0 || !out) return null
+
+  let total = 0
+  const uplink = out.match(new RegExp(`user>>>${escaped}>>>traffic>>>uplink[^\\d]*(\\d+)`))
+  const downlink = out.match(new RegExp(`user>>>${escaped}>>>traffic>>>downlink[^\\d]*(\\d+)`))
+  if (uplink?.[1]) total += Number(uplink[1])
+  if (downlink?.[1]) total += Number(downlink[1])
+  if (!Number.isFinite(total) || total <= 0) return 0
+  return total
+}
+
+function refreshUsersTrafficInDb(db: UserDatabase): UserDatabase {
+  const updated: VpnUser[] = []
+  let touched = false
+  for (const raw of db.users) {
+    const user = normalizeUser(raw)
+    const bytes = queryXrayUserTrafficBytes(user.username)
+    if (bytes === null) {
+      updated.push(user)
+      continue
+    }
+    const gb = Number((bytes / 1024 / 1024 / 1024).toFixed(3))
+    if ((user.usedTrafficGb ?? 0) !== gb) {
+      user.usedTrafficGb = gb
+      touched = true
+    }
+    updated.push(user)
+  }
+  if (touched) writeDb({ users: updated })
+  return { users: updated }
 }
 
 function buildDashboard() {
@@ -402,12 +445,27 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true, service: 'pear-vpn-backend' })
 })
 
+app.get('/api/diagnostics', (_req, res) => {
+  const xrayConfig = loadXray()
+  const xrayApi = spawnSync('xray', ['api', 'statsquery', '--server', XRAY_API_SERVER], { encoding: 'utf8' })
+  res.json({
+    ok: true,
+    checks: {
+      xrayConfigExists: Boolean(xrayConfig),
+      xrayApiServer: XRAY_API_SERVER,
+      xrayApiReachable: xrayApi.status === 0,
+      xrayApiOutputPreview: `${xrayApi.stdout ?? ''}`.split('\n').slice(0, 3),
+      subBaseUrl: SUB_BASE_URL,
+    },
+  })
+})
+
 app.get('/api/dashboard', (_req, res) => {
   res.json(buildDashboard())
 })
 
 app.get('/api/users', (_req, res) => {
-  const db = readDb()
+  const db = refreshUsersTrafficInDb(readDb())
   const users = db.users.map((raw) => {
     const user = normalizeUser(raw)
     return {
@@ -417,7 +475,6 @@ app.get('/api/users', (_req, res) => {
       subscriptionUrl: buildSubscriptionUrl(user.subToken ?? ''),
     }
   })
-  writeDb({ users: db.users.map((u) => normalizeUser(u)) })
   res.json({ users })
 })
 
@@ -482,7 +539,7 @@ app.get('/api/users/:id/subscription', (req, res) => {
 })
 
 function handleSubscription(req: express.Request, res: express.Response) {
-  const db = readDb()
+  const db = refreshUsersTrafficInDb(readDb())
   const user = db.users.map((u) => normalizeUser(u)).find((u) => u.subToken === req.params.token)
   if (!user) return res.status(404).send('not found')
   if (computeUserStatus(user) !== 'active') return res.status(403).send('subscription inactive')
